@@ -1,0 +1,159 @@
+.quill-editor {
+   display: flex;
+   flex-direction: column;
+   height: auto;
+   min-height: 200px;
+ }
+ .quill-editor .ql-container {
+   flex: 1;
+   overflow: auto;
+   height: auto;
+ }
+ .quill-editor .ql-editor {
+   min-height: 150px;
+   max-height: none;
+   overflow: visible;
+   font-size: 18px;
+ }
+ 
+.quill-editor .ql-video-url {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #333;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* แก้ไข styles สำหรับ input video URL */
+.ql-tooltip {
+  z-index: 9999 !important;
+  left: 0 !important; /* เปลี่ยนจาก right เป็น left */
+  right: auto !important; /* ยกเลิกการกำหนด right */
+  margin-left: 20px !important; /* เพิ่มระยะห่างจากขอบซ้าย */
+}
+
+.ql-tooltip input[type="text"] {
+  z-index: 10000 !important;
+  width: 320px !important; /* คงความกว้างของ input ไว้เหมือนเดิม */
+}
+
+/* ปรับตำแหน่งของปุ่มในกล่อง tooltip */
+.ql-tooltip a.ql-action::after {
+  margin-left: 16px;
+}
+
+/* สไตล์สำหรับโหมดมืด */
+.dark .ql-tooltip {
+  background-color: #2d3748 !important;
+  color: #e2e8f0 !important;
+  border-color: #4a5568 !important;
+}
+
+.dark .ql-tooltip input[type="text"] {
+  background-color: #1a202c !important;
+  color: #e2e8f0 !important;
+  border-color: #4a5568 !important;
+}
+
+/* เพิ่มสไตล์สำหรับปุ่มในกล่อง tooltip */
+.ql-tooltip a.ql-action,
+.ql-tooltip a.ql-remove {
+  color: #4a90e2;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dark .ql-tooltip a.ql-action,
+.dark .ql-tooltip a.ql-remove {
+  color: #60a5fa;
+}
+
+/* Dark mode styles */
+.dark .quill-editor .ql-toolbar {
+  background-color: #1a202c;
+  border-color: #4a5568;
+}
+
+.dark .quill-editor .ql-container {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.dark .quill-editor .ql-editor {
+  color: #e2e8f0;
+}
+
+.dark .quill-editor .ql-stroke {
+  stroke: #e2e8f0;
+}
+
+.dark .quill-editor .ql-fill {
+  fill: #e2e8f0;
+}
+
+.dark .quill-editor .ql-picker {
+  color: #e2e8f0;
+}
+
+.dark .quill-editor .ql-picker-options {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.dark .quill-editor .ql-picker-item {
+  color: #e2e8f0;
+}
+
+.dark .quill-editor .ql-picker-label {
+  color: #e2e8f0;
+}
+
+/* ปรับ styles สำหรับ input video URL ในโหมดมืด */
+.dark .ql-tooltip {
+  background-color: #2d3748 !important;
+  color: #e2e8f0 !important;
+  border-color: #4a5568 !important;
+}
+
+.dark .ql-tooltip input[type="text"] {
+  background-color: #1a202c !important;
+  color: #e2e8f0 !important;
+  border-color: #4a5568 !important;
+}
+
+.dark .quill-editor .ql-snow.ql-toolbar button:hover,
+.dark .quill-editor .ql-snow .ql-toolbar button:hover,
+.dark .quill-editor .ql-snow.ql-toolbar button:focus,
+.dark .quill-editor .ql-snow .ql-toolbar button:focus,
+.dark .quill-editor .ql-snow.ql-toolbar button.ql-active,
+.dark .quill-editor .ql-snow .ql-toolbar button.ql-active,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-label:hover,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-label:hover,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-item:hover,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-item:hover,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+  color: #60a5fa;
+}
+
+.dark .quill-editor .ql-snow.ql-toolbar button:hover .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar button:hover .ql-stroke,
+.dark .quill-editor .ql-snow.ql-toolbar button:focus .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar button:focus .ql-stroke,
+.dark .quill-editor .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+.dark .quill-editor .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.dark .quill-editor .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
+  stroke: #60a5fa;
+}
