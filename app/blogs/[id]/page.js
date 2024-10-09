@@ -1,6 +1,8 @@
 
-export default function BlogPage() {
+export default function BlogPage({params}) {
+
+  const id = params.id
   return (
-    <div>page</div>
+    <div>page {id}</div>
   )
 }
