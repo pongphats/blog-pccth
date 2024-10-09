@@ -10,6 +10,9 @@ export const QuillFormats = [
   "link",
   "image",
   "video",
+  "align",
+  "direction",
+  "indent",
 ];
 
 export const QuillModules = {
@@ -17,6 +20,9 @@ export const QuillModules = {
     [{ header: [1, 2, false] }],
     ["bold", "italic", "underline", "strike", "blockquote"],
     [{ list: "ordered" }, { list: "bullet" }],
+    [{ align: [] }],
+    [{ direction: "rtl" }],
+    [{ indent: "-1" }, { indent: "+1" }],
     ["link", "image", "video"],
     ["clean"],
   ],
