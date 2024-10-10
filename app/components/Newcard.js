@@ -3,15 +3,22 @@ import { SquareArrowOutUpRight } from "lucide-react";
 
 export default function NewCard({ news }) {
   return (
-    <li className="border rounded-lg shadow-md p-4 mb-4">
+    <li className="border rounded-lg shadow-md p-4 mb-4 relative">
       <h2 className="text-2xl font-semibold">{news.title}</h2>
-      <Link href={`/news/${news.id}`}>
-        <p className="text-gray-700 text-xl my-3 cursor-pointer  hover:text-blue-500">
-          {news.content}
-          <SquareArrowOutUpRight className="inline ml-2" />
+      {/* <p className="text-gray-700 text-xl my-3 ">{news.content}</p> */}
+
+      <p
+        className="text-gray-700 text-xl my-3 dark:text-white "
+        dangerouslySetInnerHTML={{ __html: news.content }}
+      />
+      <div className=" flex flex-row justify-between">
+        <p className="text-gray-500 text-md dark:text-white ">
+          วันที่: {news.date}
         </p>
-      </Link>
-      <p className="text-gray-500 text-md my-2">วันที่: {news.date}</p>
+        <Link href={`/news/${news.id}`}>
+          <SquareArrowOutUpRight className=" cursor-pointer hover:text-green-500" />
+        </Link>
+      </div>
     </li>
   );
 }

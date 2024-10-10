@@ -1,9 +1,9 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 const Breadcrumb = ({ items }) => {
   return (
     <nav aria-label="breadcrumb">
-      <ol className="flex space-x-2 text-gray-600">
+      <ol className="flex space-x-2 text-gray-600 dark:text-white">
         {items.map((item, index) => (
           <li key={index} className="flex items-center">
             {index > 0 && <span className="mx-2">/</span>}

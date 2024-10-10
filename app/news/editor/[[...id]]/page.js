@@ -32,17 +32,10 @@ export default function NewsEditorPage() {
     }
   }, [id]);
 
-  const stripHtml = (html) => {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
-  };
-
   const handleSave = async () => {
-    const plainTextContent = stripHtml(content);
     const newsData = {
       title,
-      content: plainTextContent,
+      content, // Store HTML content directly
       date: new Date().toISOString().split("T")[0],
     };
     try {
@@ -72,7 +65,7 @@ export default function NewsEditorPage() {
   const formats = QuillFormats;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-4xl mx-auto p-4">
       <input
         type="text"
         value={title}
@@ -93,7 +86,7 @@ export default function NewsEditorPage() {
 
       <button
         onClick={handleSave}
-        className="px-4 py-2 bg-blue-500 text-white rounded mt-4"
+        className="px-4 py-2 bg-blue-500 text-white rounded mt-4 w-full sm:w-auto"
       >
         บันทึกบทความ
       </button>
