@@ -6,7 +6,7 @@ export default function NewCard({ news }) {
     <li className="border rounded-lg shadow-md p-4 mb-4">
       <h2 className="text-2xl font-semibold">{news.title}</h2>
       <Link href={`/news/${news.id}`}>
-        <p className="text-gray-700 text-xl my-3 cursor-pointer">
+        <p className="text-gray-700 text-xl my-3 cursor-pointer  hover:text-blue-500">
           {news.content}
           <SquareArrowOutUpRight className="inline ml-2" />
         </p>
