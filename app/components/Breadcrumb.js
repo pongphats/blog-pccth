@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const Breadcrumb = ({ items }) => {
+const Breadcrumb = ({ items = [] }) => {
   return (
     <nav aria-label="breadcrumb">
       <ol className="flex space-x-2 text-gray-600">
