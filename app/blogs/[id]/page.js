@@ -40,16 +40,16 @@ export default function BlogPage({ params }) {
 
   return (
     <Layout breadcrumbItems={breadcrumbItems}>
-      <div className="mt-3 pt-8 px-8 pb-5 rounded shadow">
-        <div className="flex flex-row justify-between">
-          <p className="text-xl font-bold">{blog.header}</p>
-          <div>
-            <button className="px-2 rounded border hover:bg-yellow-200 active:bg-yellow-300"><Pencil className="w-4 h-4 inline mr-[2px]" />edit</button>
-            <button className="ml-2 px-2 rounded border hover:bg-red-300 active:bg-red-400"><Trash2 className="w-4 h-4 inline mr-[2px]" />delete</button>
-          </div>
+      <div className="flex flex-row justify-between">
+        <p className="text-3xl font-bold">{blog.header}</p>
+        <div>
+          <button className="p-2 rounded border text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
+          <button className="ml-2 p-2 rounded border text-white bg-red-500 active:bg-red-600"><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
         </div>
+      </div>
+      <div className="mt-3 pt-8 px-8 pb-5 rounded shadow dark:border">
         <p className="py-4">{blog.body}</p>
-        <div className="text-right mt-2">
+        <div className="text-right mt-5">
           <p className="text-sm">โดย {blog.createBy}</p>
           <p className="text-xs text-gray-500">12:00 PM</p>
           <p className="text-xs text-gray-500">{blog.createDate}</p>

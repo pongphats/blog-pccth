@@ -12,7 +12,7 @@ export default function BlogCard({ blog }) {
                     <p className="ml-2">({blog.createDate})</p>
                 </div>
                 <Link href={`/blogs/${blog.id}`}>
-                    <SquareArrowOutUpRight className="cursor-pointer" />
+                    <SquareArrowOutUpRight className="cursor-pointer w-5 h-5 " />
                 </Link>
             </div>
         </div>
