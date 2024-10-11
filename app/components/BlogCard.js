@@ -1,13 +1,17 @@
 import Link from 'next/link';
 import { SquareArrowOutUpRight, } from 'lucide-react';
+import "react-quill/dist/quill.core.css";
+import 'react-quill/dist/quill.snow.css'; 
 
+import "react-quill/dist/quill.snow.css"; // Quill CSS
+import "@/app/styles/quill.css"
 export default function BlogCard({ blog }) {
     console.log(blog)
     return (
         <div className="py-5 px-5 m-2 my-5 rounded border shadow-lg dark:border">
             <p className="text-xl font-bold py-2  ">{blog.header}</p>
             <div
-                className="px-2"
+                className=""
                 dangerouslySetInnerHTML={{ __html: blog.body }}
             />
             <div className="flex flex-row mt-5 text-sm text-gray-500 justify-between">

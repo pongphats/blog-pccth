@@ -45,9 +45,9 @@ export default function BlogPage({ params }) {
         <p className="text-3xl font-bold">{blog.header}</p>
         <div>
           <Link href={`/blogs/editor/${blog.id}`}>
-            <button className="p-2 rounded border text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
+            <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
           </Link>
-          <button className="ml-2 p-2 rounded border text-white bg-red-500 active:bg-red-600"><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
+          <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600"><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
         </div>
       </div>
       <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">
@@ -58,11 +58,7 @@ export default function BlogPage({ params }) {
         <div className="text-right mt-5">
           <p className="text-sm">โดย {blog.createBy}</p>
           <p className="text-xs text-gray-500">
-            {new Date(blog.createDate).toLocaleTimeString('th-TH', {
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false,
-            })}
+            {new Date(blog.createDate).toLocaleTimeString('th-TH')}
           </p>
           <p className="text-xs text-gray-500">{new Date(blog.createDate).toLocaleDateString('th-TH')}</p>
         </div>
