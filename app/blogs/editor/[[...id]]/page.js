@@ -24,8 +24,10 @@ export default function BlogEditorPage({ params }) {
 
     const blogData = {
       header: title,
-      body: content,
+      body: content
     };
+
+    console.log("blogData",blogData)
 
     const response = await fetch(apiUrl, {
       method,
@@ -53,8 +55,9 @@ export default function BlogEditorPage({ params }) {
     }
 
     const blog = await response.json();
-    setTitle(blog.header)
-    setContent(blog.body)
+    console.log(blog)
+    setTitle(blog.postHeader)
+    setContent(blog.postBody)
     setLoading(false)
   }
 

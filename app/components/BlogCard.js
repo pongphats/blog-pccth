@@ -9,13 +9,13 @@ export default function BlogCard({ blog }) {
     console.log(blog);
     return (
         <div className="py-5 px-5 m-2 my-5 rounded border shadow-lg dark:border">
-            <p className="text-xl font-bold py-2  ">{blog.header}</p>
-            <div className="line-clamp-5 overflow-hidden overflow-ellipsis" dangerouslySetInnerHTML={{ __html: blog.body }} />
+            <p className="text-xl font-bold py-2  ">{blog.postHeader}</p>
+            <div className="line-clamp-5 overflow-hidden overflow-ellipsis" dangerouslySetInnerHTML={{ __html: blog.postBody }} />
             <div className="flex flex-row mt-5 text-sm text-gray-500 justify-between">
                 <div className="flex">
-                    <p>โดย {blog.createBy}</p>
+                    <p>โดย {blog.postCreateBy}</p>
                     <p className="ml-2">
-                        ({new Date(blog.createDate).toLocaleDateString("th-TH")})
+                        ({new Date(blog.postCreateDate).toLocaleDateString("th-TH")})
                     </p>
                 </div>
                 <Link href={`/blogs/${blog.id}`}>

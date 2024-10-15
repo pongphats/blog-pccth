@@ -20,7 +20,8 @@ export default function BlogsPage() {
   async function fetchBlogs() {
     const response = await fetch('/api/blog');
     const blogs = await response.json();
-    setBlogs(blogs)
+    console.log("blogs > ", blogs)
+    setBlogs(blogs.data)
     setLoading(false)
   }
 

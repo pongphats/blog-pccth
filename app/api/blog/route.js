@@ -2,66 +2,56 @@
 
 import { NextResponse } from 'next/server';
 
-// Mock blog data (usually you'd interact with a database)
-let blogs = [
-    {
-        id: 1,
-        header: "หัวข้อที่หนึ่ง",
-        body: "<h2><strong><em><s>pure</s></em></strong></h2>",
-        createBy: "อุรังอุตัง",
-        createDate: new Date()
-    },
-    {
-        id: 2,
-        header: "หัวข้อที่สอง",
-        body: "<p>dlsakd</p><p>a</p><p>a</p><p><br></p><p>aa</p><p>aaaa</p><p>a</p><p>a</p><p>a</p><p>a</p><p>a</p><p>aa</p><p><br></p><p>a</p><p>aaaa</p><p>a</p><p>a</p><p>a</p><p>a</p><p>aaa</p>",
-        createBy: "อุรังอุตัง",
-        createDate: new Date()
-    },
-    {
-        id: 3,
-        header: "หัวข้อที่สาม",
-        body: "<h1 className='ql-align-center'>test</h1>",
-        createBy: "อุรังอุตัง",
-        createDate: new Date()
-    },
-    {
-        id: 4,
-        header: "หัวข้อที่สี่",
-        body: "<p><strong>testTTTTt</strong></p>",
-        createBy: "อุรังอุตัง",
-        createDate: new Date()
-    },
-    {
-        id: 5,
-        header: "หัวข้อที่ห้า",
-        body: '<iframe class="ql-video" frameborder="0" allowfullscreen="true" src="https://www.youtube.com/embed/RbjuXKt4aoM?showinfo=0"></iframe><p><br></p>',
-        createBy: "อุรังอุตัง",
-        createDate: new Date()
-    },
-    {
-        id: 6,
-        header: "หัวข้อที่หก",
-        body: "รายละเอียดของหัวข้อที่หก",
-        createBy: "อุรังอุตัง",
-        createDate: new Date()
-    },
-]
+const api = 'http://127.0.0.1:8080'
 
 // GET: Fetch all blog posts
 export async function GET() {
-    return NextResponse.json(blogs); // Return the list of blogs as JSON
+    try {
+        const response = await fetch(`${api}/posts/getAllPostsByPage`);
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from the API');
+        }
+
+        const blogs = await response.json();
+        return NextResponse.json(blogs);
+    }
+    catch (error) {
+        return NextResponse.json({ message: error.message }, { status: 500 });
+    }
 }
 
 // POST: Create a new blog post
-export async function POST(req) {
-    const newBlog = await req.json();
-    newBlog.id = blogs.length + 1; // Assign a new ID
-    newBlog.createBy = "เพียว"
-    newBlog.createDate = new Date()
-    blogs.push(newBlog); // Add new blog to the list
-    return NextResponse.json({ message: 'Blog created', blog: newBlog }, { status: 201 });
-}
+// export async function POST(req) {
+//     try {
+//         const newBlog = await req.json();
+//         console.log("newBlog > ", newBlog)
+
+//         const reqData = {
+//             PostHeader: newBlog.header,
+//             PostBody: newBlog.body,
+//             PostCreateBy: "mock by pure"
+//         }
+
+//         const response = await fetch('http://127.0.0.1:8080/posts/createPost', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(reqData),
+//         });
+
+//         if (!response.ok) {
+//             throw new Error('Failed to create blog post');
+//         }
+
+//         const resDate = await response.json();
+
+//         return NextResponse.json(resDate, { status: 201 });
+//     } catch (error) {
+//         return NextResponse.json({ message: error.message }, { status: 500 });
+//     }
+// }
 
 // PUT: Update an existing blog post by ID
 export async function PUT(req) {
