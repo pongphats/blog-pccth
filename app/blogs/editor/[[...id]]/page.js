@@ -20,7 +20,7 @@ export default function BlogEditorPage({ params }) {
   async function handleSave() {
     console.log({ title, content });
     const apiUrl = id ? `/api/blog/${id}` : `/api/blog`;
-    const method = id ? "PUT" : "POST"; // Use POST for create, PUT for edit
+    const method = id ? "PUT" : "POST";
 
     const blogData = {
       header: title,
@@ -74,16 +74,20 @@ export default function BlogEditorPage({ params }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="max-w-5xl mx-auto mt-5 space-y-4 p-10 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <h1 className="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">
+        {isEditMode ? "แก้ไขบทความ" : "สร้างบทความใหม่"}
+      </h1>
+
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="ชื่อบทความ"
-        className="w-full text-2xl font-bold p-2 border-none focus:outline-none rounded dark:text-white dark:bg-gray-900"
+        className="w-full text-2xl font-bold p-4 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white"
       />
 
-      <div className="quill-editor">
+      <div className="quill-editor mt-4">
         <ReactQuill
           theme="snow"
           value={content}
@@ -94,13 +98,14 @@ export default function BlogEditorPage({ params }) {
       </div>
 
       <Link href={`/blogs`}>
-        <p
+        <button
           onClick={handleSave}
-          className="px-4 py-2 bg-blue-500 text-white rounded mt-4  inline-block"
+          className="w-full mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         >
           {isEditMode ? "อัปเดตบทความ" : "บันทึกบทความ"}
-        </p>
+        </button>
       </Link>
     </div>
+
   );
 }
