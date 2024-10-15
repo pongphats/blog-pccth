@@ -1,6 +1,8 @@
 'use client';
 
+import { Bell } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Badge } from "@nextui-org/badge";
 
 export default function NotificationButton({ updateNotificationCount }) {
   const [notifications, setNotifications] = useState([]);
@@ -56,11 +58,12 @@ export default function NotificationButton({ updateNotificationCount }) {
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setShowNotifications(!showNotifications)}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        แจ้งเตือน {notifications.length > 0 && `(${notifications.length})`}
+      <button className="hover:text-gray-300 flex flex-row"
+        onClick={() => setShowNotifications(!showNotifications)}>
+        <Bell />
+        {notifications.length > 0 && (
+          <Badge content={notifications.length} color="primary" />
+        )}
       </button>
       {showNotifications && (
         <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-96 overflow-y-auto">
