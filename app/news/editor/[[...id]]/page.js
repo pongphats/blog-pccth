@@ -71,7 +71,7 @@ export default function NewsEditorPage() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="ชื่อบทความ"
-        className="w-full text-2xl font-bold p-2 border-none focus:outline-none rounded dark:text-white dark:bg-gray-900"
+        className="w-full text-xl font-bold p-2 border-none focus:outline-none rounded dark:text-white dark:bg-gray-900"
       />
 
       <div className="quill-editor">

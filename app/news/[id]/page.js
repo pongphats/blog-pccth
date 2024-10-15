@@ -38,20 +38,24 @@ export default function NewsPage() {
       <Breadcrumb items={breadcrumbItems} />
       <h1 className="text-2xl font-bold mb-4 mt-5 ">ข้อมูลข่าวสาร</h1>
       <div className="border rounded-lg shadow-md p-4 mb-4 relative">
-        <h1 className="text-2xl font-bold mb-4">{news.title}</h1>
+        <h1 className="text-xl font-bold mb-4">{news.title}</h1>
         <div
-          className="text-gray-700 text-xl my-3 dark:text-white"
+          className="text-gray-700  my-3 dark:text-white"
           dangerouslySetInnerHTML={{ __html: news.content }}
         />
         <div className="flex flex-row justify-between">
-          <p className="text-gray-500 text-md  dark:text-white">
-            วันที่: {news.date}
-          </p>
-          <Link href={`/news/editor/${id}`}>
-            <div className=" flex items-center text-black dark:text-white cursor-pointer hover:text-blue-500">
-              <span>แก้ไข</span>
+          <p className="text-gray-500   dark:text-white">วันที่: {news.date}</p>
+
+          <div className="flex flex-row gap-2">
+            <Link href={`/news/editor/${id}`}>
+              <div className=" flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
+                <span>แก้ไข</span>
+              </div>
+            </Link>
+            <div className=" flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
+              <span>ลบ</span>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
     </div>
