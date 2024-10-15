@@ -19,7 +19,7 @@ export default function NewsPage() {
     if (id) {
       const fetchNewsItem = async () => {
         try {
-          const response = await fetch(`/api/news/${id}`);
+          const response = await fetch(`/api/news/${id}`); // Ensure this URL matches your API endpoint
           const data = await response.json();
           setNews(data);
         } catch (error) {
@@ -38,16 +38,18 @@ export default function NewsPage() {
       <Breadcrumb items={breadcrumbItems} />
       <h1 className="text-2xl font-bold mb-4 mt-5 ">ข้อมูลข่าวสาร</h1>
       <div className="border rounded-lg shadow-md p-4 mb-4 relative">
-        <h1 className="text-xl font-bold mb-4">{news.title}</h1>
+        <h1 className="text-xl font-bold mb-4">{news.newsHeader}</h1>
         <div
           className="text-gray-700  my-3 dark:text-white"
-          dangerouslySetInnerHTML={{ __html: news.content }}
+          dangerouslySetInnerHTML={{ __html: news.newsBody }}
         />
         <div className="flex flex-row justify-between">
-          <p className="text-gray-500   dark:text-white">วันที่: {news.date}</p>
+          <p className="text-gray-500   dark:text-white">
+            วันที่: {news.newsCreateDate}
+          </p>
 
           <div className="flex flex-row gap-2">
-            <Link href={`/news/editor/${id}`}>
+            <Link href={`/news/editor/${news.newsId}`}>
               <div className=" flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
                 <span>แก้ไข</span>
               </div>
