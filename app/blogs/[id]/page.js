@@ -10,6 +10,7 @@ export default function BlogPage({ params }) {
   const id = params.id
   const [blog, setBlog] = useState("")
   const [isLoading, setLoading] = useState(true)
+  const [isError, setError] = useState(null);
 
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
@@ -18,16 +19,23 @@ export default function BlogPage({ params }) {
   ];
 
   async function fetchBlogById(blogId) {
-    const response = await fetch(`/api/blog/${blogId}`);
 
-    if (response.status === 404) {
-      console.log('Blog not found');
-      return;
+    try {
+      const response = await fetch(`/api/blog/${blogId}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to load blog");
+      }
+
+      const blogData = await response.json();
+      setBlog(blogData);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const blog = await response.json();
-    setBlog(blog)
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -36,7 +44,11 @@ export default function BlogPage({ params }) {
   }, [id])
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center">กำลังโหลด...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-center">ไม่พบข้อมูล</div>;
   }
 
   return (

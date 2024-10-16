@@ -6,7 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.snow.css"; // Quill CSS
 import "@/app/styles/quill.css";
 export default function BlogCard({ blog }) {
-    console.log(blog);
+    // console.log(blog);
     return (
         <div className="py-5 px-5 m-2 my-5 rounded border shadow-lg dark:border">
             <p className="text-xl font-bold py-2  ">{blog.postHeader}</p>

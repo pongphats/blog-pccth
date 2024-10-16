@@ -9,58 +9,52 @@ export async function GET(request, { params }) {
     const blogId = parseInt(id, 10); //10 คือ เลขฐานสิบ
 
     try {
-        const response = await fetch(`${api}/posts/getPostById/${blogId}`);
+        const response = await fetch(`${api}/posts/getPostById/${blogId}`, { cache: 'no-store' });
 
         if (!response.ok) {
-            throw new Error('Failed to fetch data from the API');
+            const errorData = await response.json();
+            const err = {
+                message: errorData.error || `Failed to fetch data from '/posts/getPostById/${blogId}'`,
+                status: response.status
+            }
+            return NextResponse.json(err, { status: response.status });
         }
 
-        const blog_ = await response.json();
-        return NextResponse.json(blog_);
+        const blog = await response.json();
+        return NextResponse.json(blog);
     }
     catch (error) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+        return NextResponse.json({ message: error.message }, { status: 404 });
     }
 }
 
 export async function PUT(request, { params }) {
     const { id } = params;
     const blogId = parseInt(id, 10); //10 คือ เลขฐานสิบ
+    const newBlog = await request.json();
 
-    const reqData = {
-        PostHeader: request.header,
-        PostBody: request.body,
-    }
+    try {
+        const reqData = {
+            PostHeader: newBlog.header,
+            PostBody: newBlog.body,
+        }
 
-    console.log(reqData)
+        const response = await fetch(`${api}/posts/updatePost/${blogId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reqData),
+        });
 
-    // try {
-    // const reqData = {
-    //     PostHeader: newBlog.header,
-    //     PostBody: newBlog.body,
-    // }
-
-    // console.log(reqData)
-
-    //     const response = await fetch(`${api}/posts/updatePost/${blogId}`, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(reqData),
-    //     });
-
-    //     console.log(response)
-
-    //     if (!response.ok) {
-    //         throw new Error('Failed to create blog post');
-    //     }
-
-    //     const resDate = await response.json();
+        if (!response.ok) {
+            throw new Error('Failed to create blog post');
+        }
 
         return NextResponse.json("ok", { status: 200 });
-    // }
-    // catch (error) {
-    //     return NextResponse.json({ message: error.message }, { status: 500 });
-    // }
+    }
+    catch (error) {
+        console.log("error.message", error.message)
+        return NextResponse.json({ message: error.message }, { status: 500 });
+    }
 }

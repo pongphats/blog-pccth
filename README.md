@@ -3,11 +3,13 @@
 ## การติดตั้ง
 
 1. โคลนโปรเจกต์นี้ไปยังเครื่องของคุณ:
+
    ```bash
    git clone https://github.com/your-username/your-repo-name.git
    ```
 
 2. เข้าไปยังไดเรกทอรีของโปรเจกต์:
+
    ```bash
    cd your-repo-name
    ```
@@ -20,6 +22,7 @@
 ## การรันแอปพลิเคชัน
 
 1. เริ่มต้นเซิร์ฟเวอร์การพัฒนา:
+
    ```bash
    npm run dev
    ```
@@ -29,6 +32,7 @@
 ## การสร้างเวอร์ชันสำหรับการผลิต
 
 1. สร้างแอปพลิเคชันสำหรับการผลิต:
+
    ```bash
    npm run build
    ```
@@ -37,6 +41,11 @@
    ```bash
    npm start
    ```
+
+## Doc
+
+- nextui [https://nextui.org/docs/guide/introduction]
+- no-store [https://nextjs.org/docs/app/building-your-application/caching]
 
 ## Sitemap
 

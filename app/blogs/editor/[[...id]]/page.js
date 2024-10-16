@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { useRouter } from 'next/navigation';
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
@@ -10,15 +10,17 @@ import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 
 export default function BlogEditorPage({ params }) {
 
+  const router = useRouter();
+
   const id = params.id
   const [isEditMode, setEditMode] = useState(false);
   const [isLoading, setLoading] = useState(true)
+  const [isError, setError] = useState(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   async function handleSave() {
-    console.log({ title, content });
     const apiUrl = id ? `/api/blog/${id}` : `/api/blog`;
     const method = id ? "PUT" : "POST";
 
@@ -27,8 +29,6 @@ export default function BlogEditorPage({ params }) {
       body: content
     };
 
-    console.log("blogData",blogData)
-
     const response = await fetch(apiUrl, {
       method,
       headers: { "Content-Type": "application/json" },
@@ -36,7 +36,7 @@ export default function BlogEditorPage({ params }) {
     });
 
     if (response.ok) {
-      console.log("Blog saved successfully!");
+      router.push('/blogs');
     } else {
       console.error("Failed to save blog.");
     }
@@ -47,24 +47,30 @@ export default function BlogEditorPage({ params }) {
   const formats = QuillFormats;
 
   async function fetchBlogById(blogId) {
-    const response = await fetch(`/api/blog/${blogId}`);
+    try {
+      const response = await fetch(`/api/blog/${blogId}`);
 
-    if (response.status === 404) {
-      console.log('Blog not found');
-      return;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to load blog");
+      }
+
+      const blogData = await response.json();
+      setTitle(blogData.postHeader)
+      setContent(blogData.postBody)
+
+    } catch (err) {
+      // setError(err.message);
+      router.push('/blogs/editor');
+    } finally {
+      setLoading(false);
     }
 
-    const blog = await response.json();
-    console.log(blog)
-    setTitle(blog.postHeader)
-    setContent(blog.postBody)
-    setLoading(false)
   }
 
   useEffect(() => {
     if (id) {
       setEditMode(true);
-      setLoading(true);
       fetchBlogById(id);
     } else {
       setEditMode(false);
@@ -73,8 +79,13 @@ export default function BlogEditorPage({ params }) {
   }, [id])
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center">กำลังโหลด...</div>;
   }
+
+  // if (isError) {
+  //   return <div className="text-center">ไม่พบข้อมูล</div>;
+  // }
+
 
   return (
     <div className="max-w-5xl mx-auto mt-5 space-y-4 p-10 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -100,14 +111,12 @@ export default function BlogEditorPage({ params }) {
         />
       </div>
 
-      <Link href={`/blogs`}>
-        <button
-          onClick={handleSave}
-          className="w-full mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          {isEditMode ? "อัปเดตบทความ" : "บันทึกบทความ"}
-        </button>
-      </Link>
+      <button
+        onClick={handleSave}
+        className="w-full mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+      >
+        {isEditMode ? "อัปเดตบทความ" : "บันทึกบทความ"}
+      </button>
     </div>
 
   );
