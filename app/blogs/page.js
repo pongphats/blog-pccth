@@ -18,10 +18,23 @@ export default function BlogsPage() {
 
   // Fetch all blogs
   async function fetchBlogs() {
-    const response = await fetch('/api/blog');
-    const blogs = await response.json();
-    setBlogs(blogs)
-    setLoading(false)
+    try {
+      const response = await fetch('/api/blog');
+      const blogs = await response.json();
+
+      if (!response.ok) {
+        throw new Error(blogs.message || "Failed to fetch blogs");
+      }
+
+      const sortedBlogs = blogs.data.sort((a, b) => a.id - b.id);
+      setBlogs(sortedBlogs);
+      setLoading(false)
+
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -30,9 +43,8 @@ export default function BlogsPage() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className='text-center'>กำลังโหลด...</div>;
   }
-
 
   return (
     <Layout breadcrumbItems={breadcrumbItems}>

@@ -10,6 +10,7 @@ export default function BlogPage({ params }) {
   const id = params.id
   const [blog, setBlog] = useState("")
   const [isLoading, setLoading] = useState(true)
+  const [isError, setError] = useState(null);
 
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
@@ -18,16 +19,23 @@ export default function BlogPage({ params }) {
   ];
 
   async function fetchBlogById(blogId) {
-    const response = await fetch(`/api/blog/${blogId}`);
 
-    if (response.status === 404) {
-      console.log('Blog not found');
-      return;
+    try {
+      const response = await fetch(`/api/blog/${blogId}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to load blog");
+      }
+
+      const blogData = await response.json();
+      setBlog(blogData);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const blog = await response.json();
-    setBlog(blog)
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -36,13 +44,17 @@ export default function BlogPage({ params }) {
   }, [id])
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center">กำลังโหลด...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-center">ไม่พบข้อมูล</div>;
   }
 
   return (
     <Layout breadcrumbItems={breadcrumbItems}>
       <div className="flex flex-row justify-between">
-        <p className="text-3xl font-bold">{blog.header}</p>
+        <p className="text-3xl font-bold">{blog.postHeader}</p>
         <div>
           <Link href={`/blogs/editor/${blog.id}`}>
             <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
@@ -53,14 +65,14 @@ export default function BlogPage({ params }) {
       <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">
         <div
           className="px-2"
-          dangerouslySetInnerHTML={{ __html: blog.body }}
+          dangerouslySetInnerHTML={{ __html: blog.postBody }}
         />
         <div className="text-right mt-5">
-          <p className="text-sm">โดย {blog.createBy}</p>
+          <p className="text-sm">โดย {blog.postCreateBy}</p>
           <p className="text-xs text-gray-500">
-            {new Date(blog.createDate).toLocaleTimeString('th-TH')}
+            {new Date(blog.postCreateDate).toLocaleTimeString('th-TH')}
           </p>
-          <p className="text-xs text-gray-500">{new Date(blog.createDate).toLocaleDateString('th-TH')}</p>
+          <p className="text-xs text-gray-500">{new Date(blog.postCreateDate).toLocaleDateString('th-TH')}</p>
         </div>
       </div>
     </Layout>
