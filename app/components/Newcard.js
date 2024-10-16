@@ -13,7 +13,7 @@ export default function NewCard({ news }) {
       />
       <div className=" flex flex-row justify-between">
         <p className="text-gray-500 dark:text-white ">
-          วันที่: {news.newsCreateDate}
+          วันที่: {new Date(news.newsCreateDate).toLocaleDateString("th-TH")}
         </p>
         <Link href={`/news/${news.newsId}`}>
           <SquareArrowOutUpRight className=" cursor-pointer hover:text-green-500" />

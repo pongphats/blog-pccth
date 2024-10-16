@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumb from "../../components/Breadcrumb";
+import Dialog from "../../components/Dialog"; // Import Dialog
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);
@@ -33,22 +34,31 @@ export default function NewsPage() {
   }, [id]);
 
   const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/news/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id }),
-      });
+    const confirmed = await Dialog.confirm(
+      "ยืนยันการลบ",
+      "คุณแน่ใจหรือว่าต้องการลบข่าวสารนี้?"
+    );
 
-      if (response.ok) {
-        router.push("/news"); // Redirect to news list page after deletion
-      } else {
-        console.error("Failed to delete news item");
+    if (confirmed) {
+      try {
+        const response = await fetch(`/api/news/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          await Dialog.success("ลบสำเร็จ", "ข่าวสารถูกลบเรียบร้อยแล้ว");
+          router.push("/news"); // Redirect to news list page after deletion
+        } else {
+          await Dialog.error("ลบไม่สำเร็จ", "ไม่สามารถลบข่าวสารได้");
+          console.error("Failed to delete news item");
+        }
+      } catch (error) {
+        await Dialog.error("ข้อผิดพลาด", "เกิดข้อผิดพลาดในการลบข่าวสาร");
+        console.error("Error deleting news item:", error);
       }
-    } catch (error) {
-      console.error("Error deleting news item:", error);
     }
   };
 
@@ -66,7 +76,7 @@ export default function NewsPage() {
         />
         <div className="flex flex-row justify-between">
           <p className="text-gray-500 dark:text-white">
-            วันที่: {news.newsCreateDate}
+            วันที่: {new Date(news.newsCreateDate).toLocaleDateString("th-TH")}
           </p>
 
           <div className="flex flex-row gap-2">
