@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Pencil, Trash2 } from 'lucide-react';
 import Layout from "../layout";
+import Dialog from "@/app/components/Dialog";
 
 export default function BlogPage({ params }) {
 
@@ -42,7 +43,8 @@ export default function BlogPage({ params }) {
   }
 
   async function handleDelete() {
-    if (confirm("Are you sure you want to delete this blog post?")) {
+    const confirmed = await Dialog.confirm("คุณต้องการลบบล็อกนี้หรือไม่?", `หัวข้อ :${blog.postHeader}`);
+    if (confirmed) {
       setLoading(true)
       try {
         const response = await fetch(`/api/blog/${id}`, {
@@ -53,7 +55,7 @@ export default function BlogPage({ params }) {
           const errorData = await response.json();
           throw new Error(errorData.message || "Failed to delete blog");
         }
-
+        await Dialog.success('ลบแล้ว!', 'บล็อกของคุณถูกลบแล้ว.');
         router.push('/blogs');
 
       } catch (error) {
@@ -62,7 +64,6 @@ export default function BlogPage({ params }) {
         setLoading(false)
       }
     }
-
   }
 
   useEffect(() => {

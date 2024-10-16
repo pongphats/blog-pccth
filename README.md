@@ -46,6 +46,7 @@
 
 - nextui [https://nextui.org/docs/guide/introduction]
 - no-store [https://nextjs.org/docs/app/building-your-application/caching]
+- sweetalert 2 [https://sweetalert2.github.io/] 
 
 ## Sitemap
 
