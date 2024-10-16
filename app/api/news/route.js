@@ -1,55 +1,127 @@
 import { NextResponse } from "next/server";
 
-let newsData = [
-  {
-    id: 1,
-    title: `“อุตุ” เตือน “ตะวันออก-ใต้-กทม.” ฝนตกหนัก 70% ระวังท่วมฉับพลัน-น้ำป่าไหลหลาก`,
-    content:
-      "กรมอุตุนิยมวิทยาได้พยากรณ์อากาศ 24 ชั่วโมงข้างหน้าในลักษณะทั่วไปว่า ลมฝ่ายตะวันออกพัดนำความชื้นจากทะเลจีนใต้ และอ่าวไทยเข้ามาปกคลุมภาคตะวันออกเฉียงเหนือ",
-    date: "2023-10-01",
-  },
-  {
-    id: 2,
-    title: `“ฟินันเซีย” แนะสอย BJC เป้า 31 บาท มองกำไรปี 68 โต 16% รับยอดขายพุ่ง`,
-    content: `บริษัทหลักทรัพย์ ฟินันเซีย ไซรัส จำกัด (มหาชน) หรือ FSS ระบุในบทวิเคราะห์วันนี้ (10 ต.ค.67) แนะนำ “ซื้อ” หุ้น บริษัท เบอร์ลี่ ยุคเกอร์ จำกัด (มหาชน) หรือ BJC ราคาเป้าหมายปี 68 ที่ 31 บาท หลังมองว่าการเติบโตของยอดขายสาขาเดิมฟื้นตัวดีในเดือน ก.ย. มาอยู่ที่ 4-5% แม้กระนั้นก็ตามกำไรปกติปี 67 น่าจะลดลง`,
-    date: "2023-10-02",
-  },
-  // ... more news items
-];
+let newsData = [];
+
+// Function to fetch news from external API
+async function fetchNewsFromAPI() {
+  try {
+    const response = await fetch("http://127.0.0.1:8080/news/getAllNews");
+    if (!response.ok) {
+      throw new Error("Failed to fetch news");
+    }
+    const data = await response.json();
+    newsData = data; // Update local newsData with fetched data
+  } catch (error) {
+    console.error("Error fetching news:", error);
+  }
+}
 
 // GET: Fetch all news
 export async function GET() {
+  await fetchNewsFromAPI(); // Fetch news before returning
   return NextResponse.json(newsData);
 }
 
 // POST: Create a new news item
 export async function POST(request) {
   const newNews = await request.json();
-  newNews.id = newsData.length + 1; // Simple ID generation
-  newsData.push(newNews);
-  return NextResponse.json(newNews, { status: 201 });
+  try {
+    console.log(newNews);
+    const response = await fetch("http://127.0.0.1:8080/news/createNews", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newNews),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create news");
+    }
+
+    const createdNews = await response.json();
+    newsData.push(createdNews); // Update local newsData with the created news
+    return NextResponse.json(createdNews, { status: 201 });
+  } catch (error) {
+    console.error("Error creating news:", error);
+    return NextResponse.json(
+      { error: "Failed to create news" },
+      { status: 500 }
+    );
+  }
 }
 
 // PUT: Update an existing news item
 export async function PUT(request) {
   const updatedNews = await request.json();
-  const index = newsData.findIndex((news) => news.id === updatedNews.id);
-  if (index !== -1) {
-    newsData[index] = updatedNews;
-    return NextResponse.json(updatedNews);
-  } else {
-    return NextResponse.json({ error: "News not found" }, { status: 404 });
+  const newsId = updatedNews.id;
+  console.log("updatedNews", updatedNews); // Assuming the updated news object contains an 'id' field
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8080/news/updateNews/${newsId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedNews),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update news");
+    }
+
+    const updatedNewsFromAPI = await response.json();
+    const index = newsData.findIndex((news) => news.id === newsId);
+    if (index !== -1) {
+      newsData[index] = updatedNewsFromAPI; // Update local newsData with the updated news
+      return NextResponse.json(updatedNewsFromAPI);
+    } else {
+      return NextResponse.json({ error: "News not found" }, { status: 404 });
+    }
+  } catch (error) {
+    console.error("Error updating news:", error);
+    return NextResponse.json(
+      { error: "Failed to update news" },
+      { status: 500 }
+    );
   }
 }
 
 // DELETE: Remove a news item
 export async function DELETE(request) {
   const { id } = await request.json();
-  const index = newsData.findIndex((news) => news.id === id);
-  if (index !== -1) {
-    newsData.splice(index, 1);
+  const newsId = parseInt(id, 10); // Ensure the ID is an integer
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8080/news/deleteNews/${newsId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to delete news");
+    }
+
+    // Optionally, you can remove the deleted item from local newsData
+    const index = newsData.findIndex((news) => news.id === newsId);
+    if (index !== -1) {
+      newsData.splice(index, 1);
+    }
+
     return NextResponse.json({ message: "News deleted" });
-  } else {
-    return NextResponse.json({ error: "News not found" }, { status: 404 });
+  } catch (error) {
+    console.error("Error deleting news:", error);
+    return NextResponse.json(
+      { error: "Failed to delete news" },
+      { status: 500 }
+    );
   }
 }

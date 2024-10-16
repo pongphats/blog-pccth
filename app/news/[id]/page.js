@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumb from "../../components/Breadcrumb";
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);
   const { id } = useParams();
+  const router = useRouter();
 
   const breadcrumbItems = [
     { label: "หน้าหลัก", href: "/" },
@@ -31,6 +32,26 @@ export default function NewsPage() {
     }
   }, [id]);
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/news/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        router.push("/news"); // Redirect to news list page after deletion
+      } else {
+        console.error("Failed to delete news item");
+      }
+    } catch (error) {
+      console.error("Error deleting news item:", error);
+    }
+  };
+
   if (!news) return <div>Loading...</div>;
 
   return (
@@ -38,21 +59,26 @@ export default function NewsPage() {
       <Breadcrumb items={breadcrumbItems} />
       <h1 className="text-2xl font-bold mb-4 mt-5 ">ข้อมูลข่าวสาร</h1>
       <div className="border rounded-lg shadow-md p-4 mb-4 relative">
-        <h1 className="text-xl font-bold mb-4">{news.title}</h1>
+        <h1 className="text-xl font-bold mb-4">{news.newsHeader}</h1>
         <div
-          className="text-gray-700  my-3 dark:text-white"
-          dangerouslySetInnerHTML={{ __html: news.content }}
+          className="text-gray-700 my-3 dark:text-white"
+          dangerouslySetInnerHTML={{ __html: news.newsBody }}
         />
         <div className="flex flex-row justify-between">
-          <p className="text-gray-500   dark:text-white">วันที่: {news.date}</p>
+          <p className="text-gray-500 dark:text-white">
+            วันที่: {news.newsCreateDate}
+          </p>
 
           <div className="flex flex-row gap-2">
-            <Link href={`/news/editor/${id}`}>
-              <div className=" flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
+            <Link href={`/news/editor/${news.newsId}`}>
+              <div className="flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
                 <span>แก้ไข</span>
               </div>
             </Link>
-            <div className=" flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
+            <div
+              onClick={handleDelete}
+              className="flex items-center text-black dark:text-white cursor-pointer hover:text-red-500"
+            >
               <span>ลบ</span>
             </div>
           </div>

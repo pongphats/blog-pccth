@@ -1,29 +1,80 @@
 import { NextResponse } from "next/server";
 
-let newsData = [
-  {
-    id: 1,
-    title: `“อุตุ” เตือน “ตะวันออก-ใต้-กทม.” ฝนตกหนัก 70% ระวังท่วมฉับพลัน-น้ำป่าไหลหลาก`,
-    content:
-      "กรมอุตุนิยมวิทยาได้พยากรณ์อากาศ 24 ชั่วโมงข้างหน้าในลักษณะทั่วไปว่า ลมฝ่ายตะวันออกพัดนำความชื้นจากทะเลจีนใต้ และอ่าวไทยเข้ามาปกคลุมภาคตะวันออกเฉียงเหนือ",
-    date: "2023-10-01",
-  },
-  {
-    id: 2,
-    title: `“ฟินันเซีย” แนะสอย BJC เป้า 31 บาท มองกำไรปี 68 โต 16% รับยอดขายพุ่ง`,
-    content: `บริษัทหลักทรัพย์ ฟินันเซีย ไซรัส จำกัด (มหาชน) หรือ FSS ระบุในบทวิเคราะห์วันนี้ (10 ต.ค.67) แนะนำ “ซื้อ” หุ้น บริษัท เบอร์ลี่ ยุคเกอร์ จำกัด (มหาชน) หรือ BJC ราคาเป้าหมายปี 68 ที่ 31 บาท หลังมองว่าการเติบโตของยอดขายสาขาเดิมฟื้นตัวดีในเดือน ก.ย. มาอยู่ที่ 4-5% แม้กระนั้นก็ตามกำไรปกติปี 67 น่าจะลดลง`,
-    date: "2023-10-02",
-  },
-  // ... more news items
-];
-
 export async function GET(request, { params }) {
   const { id } = params;
-  const newsItem = newsData.find((news) => news.id === parseInt(id));
+  const newsId = parseInt(id, 10);
+  const response = await fetch(
+    `http://127.0.0.1:8080/news/getNewsById/${newsId}`,
+    { cache: "no-store" }
+  );
 
-  if (newsItem) {
-    return NextResponse.json(newsItem);
+  const data = await response.json();
+
+  if (data) {
+    return NextResponse.json(data);
   } else {
+    console.error(`News with id ${id} not found`);
     return NextResponse.json({ error: "News not found" }, { status: 404 });
+  }
+}
+
+export async function PUT(request, { params }) {
+  const { id } = params;
+  const updatedNews = await request.json();
+  const newsId = parseInt(id, 10);
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8080/news/updateNews/${newsId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedNews),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update news");
+    }
+
+    const updatedNewsFromAPI = await response.json();
+    return NextResponse.json(updatedNewsFromAPI);
+  } catch (error) {
+    console.error("Error updating news:", error);
+    return NextResponse.json(
+      { error: "Failed to update news" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request, { params }) {
+  const { id } = params;
+  const newsId = parseInt(id, 10);
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8080/news/deleteNews/${newsId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to delete news");
+    }
+
+    return NextResponse.json({ message: "News deleted" });
+  } catch (error) {
+    console.error("Error deleting news:", error);
+    return NextResponse.json(
+      { error: "Failed to delete news" },
+      { status: 500 }
+    );
   }
 }
