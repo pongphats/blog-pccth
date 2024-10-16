@@ -66,7 +66,7 @@ export default function NewsPage() {
         />
         <div className="flex flex-row justify-between">
           <p className="text-gray-500 dark:text-white">
-            วันที่: {news.newsCreateDate}
+            วันที่: {new Date(news.newsCreateDate).toLocaleDateString("th-TH")}
           </p>
 
           <div className="flex flex-row gap-2">
