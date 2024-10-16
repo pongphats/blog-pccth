@@ -26,7 +26,7 @@ export default function NewsEditorPage() {
             throw new Error("Failed to fetch news item");
           }
           const data = await response.json();
-          setTitle(data.postHeader);
+          setTitle(data.newsHeader);
           setContent(data.newsBody);
         } catch (error) {
           console.error("Error fetching news item:", error);
@@ -41,13 +41,16 @@ export default function NewsEditorPage() {
 
   const handleSave = async () => {
     const newsData = {
+      id, // Ensure the ID is included for the PUT request
       newsHeader: title,
       newsBody: content, // Store HTML content directly
       date: new Date().toISOString().split("T")[0],
     };
+
     try {
       const response = id
         ? await fetch(`/api/news/${id}`, {
+            // Use id directly if it's not an array
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newsData),
