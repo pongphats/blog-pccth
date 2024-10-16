@@ -1,7 +1,9 @@
-import Link from 'next/link';
+'use client'
+
+import React, { useState } from "react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, NavbarMenuToggle, NavbarMenu } from "@nextui-org/react";
 import ThemeToggle from './ThemeToggle';
 import NotificationButton from './NotificationButton';
-
 
 const navLinks = [
   { href: '/', label: 'หน้าหลัก' },
@@ -13,24 +15,57 @@ const navLinks = [
 ];
 
 const Navigation = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <nav className="bg-gray-800 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <ul className="flex space-x-4">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Link href={link.href} className="hover:text-gray-300" aria-label={link.label}>
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <div className="flex items-center space-x-4">
+    <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} className="bg-gray-800">
+
+      {/* size : < md */}
+      <NavbarContent className="flex md:hidden justify-end text-white">
+        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+      </NavbarContent>
+
+      <NavbarMenu className="bg-gray-700 bg-opacity-70">
+        {navLinks.map((link) => (
+          <NavbarItem key={link.href}>
+            <Link href={link.href} className="text-white">
+              {link.label}
+            </Link>
+          </NavbarItem>
+        ))}
+      </NavbarMenu>
+
+      {/* start */}
+      <NavbarContent justify="start">
+        <NavbarBrand>
+          <p className="font-bold text-white">
+            <span className="text-green-600 text-xl">PCC</span> Training
+          </p>
+        </NavbarBrand>
+      </NavbarContent>
+
+      {/* center */}
+      {/* size : > md */}
+      <NavbarContent className="hidden md:flex gap-4" justify="center">
+        {navLinks.map((link) => (
+          <NavbarItem key={link.href}>
+            <Link href={link.href} className="text-white">
+              {link.label}
+            </Link>
+          </NavbarItem>
+        ))}
+      </NavbarContent>
+
+      {/* end */}
+      <NavbarContent justify="end" className="text-white">
+        <NavbarItem>
           <NotificationButton aria-label="แจ้งเตือน" />
+        </NavbarItem>
+        <NavbarItem>
           <ThemeToggle aria-label="เปลี่ยนธีม" />
-        </div>
-      </div>
-    </nav>
+        </NavbarItem>
+      </NavbarContent>
+    </Navbar>
   );
 };
 

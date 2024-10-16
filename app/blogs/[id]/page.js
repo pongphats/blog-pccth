@@ -19,7 +19,7 @@ export default function BlogPage({ params }) {
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
     { label: 'บล็อก', href: '/blogs' },
-    { label: blog ? blog.header : 'Loading...', href: `/blogs/${id}` },
+    { label: blog ? blog.postHeader : 'Loading...', href: `/blogs/${id}` },
   ];
 
   async function fetchBlogById(blogId) {
