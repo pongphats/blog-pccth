@@ -13,7 +13,7 @@ export default function BlogsPage() {
 
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
-    { label: 'blogs', href: '/blogs' },
+    { label: 'บล็อก', href: '/blogs' },
   ];
 
   // Fetch all blogs
