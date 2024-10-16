@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Pencil, Trash2 } from 'lucide-react';
 import Layout from "../layout";
 
 export default function BlogPage({ params }) {
+
+  const router = useRouter();
 
   const id = params.id
   const [blog, setBlog] = useState("")
@@ -38,6 +41,30 @@ export default function BlogPage({ params }) {
     }
   }
 
+  async function handleDelete() {
+    if (confirm("Are you sure you want to delete this blog post?")) {
+      setLoading(true)
+      try {
+        const response = await fetch(`/api/blog/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to delete blog");
+        }
+
+        router.push('/blogs');
+
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      } finally {
+        setLoading(false)
+      }
+    }
+
+  }
+
   useEffect(() => {
     setLoading(true)
     fetchBlogById(id)
@@ -48,7 +75,10 @@ export default function BlogPage({ params }) {
   }
 
   if (isError) {
-    return <div className="text-center">ไม่พบข้อมูล</div>;
+    return <div className="text-center">
+      <p>ไม่พบข้อมูล</p>
+      <Link href={`/blogs`}><p className="text-blue-500 underline mt-6 hover:text-blue-600 ">ดูบล็อกทั้งหมด</p></Link>
+    </div>;
   }
 
   return (
@@ -59,7 +89,7 @@ export default function BlogPage({ params }) {
           <Link href={`/blogs/editor/${blog.id}`}>
             <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
           </Link>
-          <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600"><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
+          <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600" onClick={handleDelete}><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
         </div>
       </div>
       <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">

@@ -48,13 +48,29 @@ export async function PUT(request, { params }) {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to create blog post');
+            throw new Error('Failed to update blog post');
         }
 
         return NextResponse.json("ok", { status: 200 });
     }
     catch (error) {
-        console.log("error.message", error.message)
+        return NextResponse.json({ message: error.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(request, { params }) {
+    const { id } = params;
+    const blogId = parseInt(id, 10);
+
+    try {
+        const response = await fetch(`${api}/posts/deletePost/${blogId}`, {
+            method: 'DELETE',
+        });
+        console.log(await response.json())
+
+        return NextResponse.json({ message: "Blog deleted successfully" }, { status: 200 });
+    } catch (error) {
+        console.error("Error deleting blog:", error);
         return NextResponse.json({ message: error.message }, { status: 500 });
     }
 }
