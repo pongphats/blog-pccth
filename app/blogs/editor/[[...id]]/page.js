@@ -15,7 +15,7 @@ export default function BlogEditorPage({ params }) {
   const id = params.id
   const [isEditMode, setEditMode] = useState(false);
   const [isLoading, setLoading] = useState(true)
-  const [isError, setError] = useState(null);
+  // const [isError, setError] = useState(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -98,7 +98,7 @@ export default function BlogEditorPage({ params }) {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="ชื่อบทความ"
-        className="w-full text-2xl font-bold p-4 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white"
+        className="w-full text-2xl font-bold p-4 border border-gray-300 shadow-sm focus:outline-none dark:bg-gray-900 dark:text-white"
       />
 
       <div className="quill-editor mt-4">

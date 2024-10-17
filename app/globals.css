@@ -8,35 +8,17 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
-
 body {
   color: rgb(var(--foreground-rgb));
-  /* background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  transition: color 0.3s ease, background 0.3s ease; */
 }
 
 /* เพิ่มสไตล์สำหรับโหมดมืด */
+.dark {
+  @apply bg-gray-900;
+}
+
 .dark body {
-  @apply bg-gray-900 text-white;
-  /* color: white; */
-  /* background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb)); */
+  @apply text-white;
 }
 
 /* เพิ่ม transition สำหรับทุก element */
