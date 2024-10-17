@@ -22,16 +22,39 @@ export default function BlogsPage() {
   ];
 
   // Fetch all blogs
+  // async function fetchBlogs() {
+  //   try {
+  //     const response = await fetch('/api/blog');
+  //     const blogs = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(blogs.message || "Failed to fetch blogs");
+  //     }
+
+  //     const sortedBlogs = blogs.sort((a, b) => a.id - b.id);
+  //     setBlogs(sortedBlogs);
+  //     setLoading(false)
+
+  //   } catch (error) {
+  //     console.error("Error fetching blogs:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
   async function fetchBlogs() {
     try {
-      const response = await fetch('/api/blog');
+      const response = await fetch(`/api/blog/?page=${currentPage}&size=${blogsPerPage}`, {
+        method: 'GET',
+        headers: { "Content-Type": "application/json" },
+      });
       const blogs = await response.json();
 
       if (!response.ok) {
         throw new Error(blogs.message || "Failed to fetch blogs");
       }
 
-      const sortedBlogs = blogs.data.sort((a, b) => a.id - b.id);
+      const sortedBlogs = blogs.sort((a, b) => a.id - b.id);
       setBlogs(sortedBlogs);
       setLoading(false)
 
@@ -65,7 +88,7 @@ export default function BlogsPage() {
           <SquarePlus className="w-5 h-5 inline mr-[5px] " />เพิ่มบล็อก
         </Link>
       </div>
-      
+
       {
         currentBlogs.map((blog) => (
           <BlogCard blog={blog} key={blog.id} />

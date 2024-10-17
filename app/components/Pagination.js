@@ -4,7 +4,7 @@ import { Pagination } from '@nextui-org/react';
 const PaginationComponent = ({ currentPage, totalPages, onPageChange }) => {
     return (
         <Pagination
-            loop
+            // loop
             showControls
             total={totalPages}
             page={currentPage}
