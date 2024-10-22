@@ -23,7 +23,7 @@ export default function NotificationButton({ updateNotificationCount }) {
         updateNotificationCount(data.length);
       }
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      // console.error('Error fetching notifications:', error);
     }
   };
 
