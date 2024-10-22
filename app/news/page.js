@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import NewCard from "../components/Newcard";
 import Breadcrumb from "../components/Breadcrumb";
 import Link from "next/link";
+import { SquarePlus } from "lucide-react";
 
 export default function NewsListPage() {
   const [newsData, setNewsData] = useState([]);
@@ -33,10 +34,11 @@ export default function NewsListPage() {
       <Breadcrumb items={breadcrumbItems} />
       <div className=" flex flex-row justify-between">
         <h1 className="text-2xl font-bold mb-4 mt-5">ข้อมูลข่าวสาร</h1>
-        <Link href="/news/editor">
-          <button className="px-4 py-2 border border-green-500  rounded  mb-4 mt-5 hover:bg-green-500 hover:text-white">
-            เพิ่มข่าวสาร
-          </button>
+        <Link
+          href="/news/editor"
+          className="inline-flex items-center px-4 py-3 border border-green-500 rounded  mb-4 mt-5 hover:bg-green-500 hover:text-white"
+        >
+          <SquarePlus className="mr-2" /> เพิ่มข่าวสาร
         </Link>
       </div>
       <ul>
