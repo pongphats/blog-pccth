@@ -50,6 +50,13 @@ export default function NewsPage() {
 
         if (response.ok) {
           await Dialog.success("ลบสำเร็จ", "ข่าวสารถูกลบเรียบร้อยแล้ว");
+          await new Promise((resolve, reject) => {
+            return setTimeout(resolve, 100);
+          });
+          router.refresh();
+          await new Promise((resolve, reject) => {
+            return setTimeout(resolve, 100);
+          });
           router.push("/news"); // Redirect to news list page after deletion
         } else {
           await Dialog.error("ลบไม่สำเร็จ", "ไม่สามารถลบข่าวสารได้");

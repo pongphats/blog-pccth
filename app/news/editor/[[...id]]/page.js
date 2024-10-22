@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
+import { revalidatePath } from "next/cache";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -54,6 +55,7 @@ export default function NewsEditorPage() {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newsData),
+            cache: "no-store",
           })
         : await fetch("/api/news", {
             method: "POST",
@@ -62,6 +64,13 @@ export default function NewsEditorPage() {
           });
 
       if (response.ok) {
+        await new Promise((resolve, reject) => {
+          return setTimeout(resolve, 100);
+        });
+        router.refresh();
+        await new Promise((resolve, reject) => {
+          return setTimeout(resolve, 100);
+        });
         router.push("/news");
       } else {
         console.error("Error saving news item");
