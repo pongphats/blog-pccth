@@ -12,9 +12,9 @@ import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 import CommentCard from "@/app/components/CommentCard";
-import SkeletonNewsDetail from "@/app/components/SkeletonNewsDetail";
 import BlogByIdLoading from "@/app/components/Skeleton/BlogByIdLoading";
 import CommentBlogLoading from "@/app/components/Skeleton/CommentBlogLoading";
+import { formatDateAndTime } from "@/app/utils/dateUtils";
 
 export default function BlogPage({ params }) {
 
@@ -206,9 +206,8 @@ export default function BlogPage({ params }) {
               <div className="text-right mt-5">
                 <p className="text-sm">โดย {blog.postCreateBy}</p>
                 <p className="text-xs text-gray-500">
-                  {new Date(blog.postCreateDate).toLocaleTimeString('th-TH')}
+                  {formatDateAndTime(blog.postCreateDate)}
                 </p>
-                <p className="text-xs text-gray-500">{new Date(blog.postCreateDate).toLocaleDateString('th-TH')}</p>
               </div>
             </div>
           </>

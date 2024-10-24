@@ -1,6 +1,7 @@
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/avatar";
 import { Trash2 } from 'lucide-react';
 import { Tooltip } from "@nextui-org/react";
+import { formatDateAndTime } from "../utils/dateUtils";
 
 export default function CommentCard({ comment, onDelete }) {
     const handleDelete = () => {
@@ -13,7 +14,10 @@ export default function CommentCard({ comment, onDelete }) {
             <div className="flex flex-row justify-between">
                 <div className="flex flex-row ">
                     <Avatar name={comment.commentCreateBy} />
-                    <div className="my-auto p-2" >{comment.commentCreateBy}</div>
+                    <div className="pl-2">
+                        <div className="" >{comment.commentCreateBy}</div>
+                        <div className="text-xs" >{formatDateAndTime(comment.commentCreateDate)}</div>
+                    </div>
                 </div>
                 {/* Button Delete Comment */}
                 {

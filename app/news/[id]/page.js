@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumb from "../../components/Breadcrumb";
 import Dialog from "../../components/Dialog";
-import SkeletonNewsDetail from "../../components/SkeletonNewsDetail"; // นำเข้าคอมโพเนนต์ใหม่
+import SkeletonNewsDetail from "../../components/Skeleton/SkeletonNewsDetail"; // นำเข้าคอมโพเนนต์ใหม่
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);

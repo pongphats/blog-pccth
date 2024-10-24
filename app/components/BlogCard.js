@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 
 import "react-quill/dist/quill.snow.css"; // Quill CSS
 import "@/app/styles/quill.css";
+import { formatDate } from "../utils/dateUtils";
 export default function BlogCard({ blog }) {
     return (
         <div className="py-5 px-5 m-2 my-5 rounded border shadow-lg dark:border">
@@ -14,7 +15,8 @@ export default function BlogCard({ blog }) {
                 <div className="flex">
                     <p>โดย {blog.postCreateBy}</p>
                     <p className="ml-2">
-                        ({new Date(blog.postCreateDate).toLocaleDateString("th-TH")})
+                        {/* ({new Date(blog.postCreateDate).toLocaleDateString("th-TH")}) */}
+                        ({formatDate(blog.postCreateDate)})
                     </p>
                 </div>
                 <Link href={`/blogs/${blog.id}`}>
