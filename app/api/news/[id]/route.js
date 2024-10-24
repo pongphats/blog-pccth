@@ -32,6 +32,9 @@ export async function PUT(request, { params }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedNews),
+      },
+      {
+        cache: "no-store",
       }
     );
 

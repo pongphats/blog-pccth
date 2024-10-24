@@ -1,24 +1,12 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 let newsData = [];
 
-// Function to fetch news from external API
-async function fetchNewsFromAPI() {
-  try {
-    const response = await fetch("http://127.0.0.1:8080/news/getAllNews");
-    if (!response.ok) {
-      throw new Error("Failed to fetch news");
-    }
-    const data = await response.json();
-    newsData = data; // Update local newsData with fetched data
-  } catch (error) {
-    console.error("Error fetching news:", error);
-  }
-}
-
 // GET: Fetch all news
 export async function GET() {
-  await fetchNewsFromAPI(); // Fetch news before returning
+  await fetchNewsFromAPI(); // ดึงข้อมูลก่อนส่งกลับ
+  console.log("Returning news data:", newsData); // ตรวจสอบข้อมูลที่ส่งกลับ
   return NextResponse.json(newsData);
 }
 
@@ -55,7 +43,7 @@ export async function POST(request) {
 export async function PUT(request) {
   const updatedNews = await request.json();
   const newsId = updatedNews.id;
-  console.log("updatedNews", updatedNews); // Assuming the updated news object contains an 'id' field
+  // Assuming the updated news object contains an 'id' field
 
   try {
     const response = await fetch(
@@ -76,6 +64,7 @@ export async function PUT(request) {
     const updatedNewsFromAPI = await response.json();
     const index = newsData.findIndex((news) => news.id === newsId);
     if (index !== -1) {
+      revalidatePath("/news");
       newsData[index] = updatedNewsFromAPI; // Update local newsData with the updated news
       return NextResponse.json(updatedNewsFromAPI);
     } else {
