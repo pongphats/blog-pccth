@@ -42,7 +42,6 @@ export default async function BlogsPage() {
     </Layout>
   );
 }
-
 async function BlogContent() {
   await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
 
