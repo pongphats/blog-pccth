@@ -56,6 +56,13 @@ export default function BlogPage({ params }) {
           throw new Error(errorData.message || "Failed to delete blog");
         }
         await Dialog.success('ลบแล้ว!', 'บล็อกของคุณถูกลบแล้ว.');
+        await new Promise((resolve, reject) => {
+          return setTimeout(resolve, 100);
+        })
+        router.refresh()
+        await new Promise((resolve, reject) => {
+          return setTimeout(resolve, 100);
+        })
         router.push('/blogs');
 
       } catch (error) {
@@ -86,6 +93,7 @@ export default function BlogPage({ params }) {
     <Layout breadcrumbItems={breadcrumbItems}>
       <div className="flex flex-row justify-between">
         <p className="text-3xl font-bold">{blog.postHeader}</p>
+        {/* edit / delete */}
         <div>
           <Link href={`/blogs/editor/${blog.id}`}>
             <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
@@ -93,6 +101,7 @@ export default function BlogPage({ params }) {
           <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600" onClick={handleDelete}><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
         </div>
       </div>
+      {/* details blog */}
       <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">
         <div
           className="px-2"
@@ -106,6 +115,14 @@ export default function BlogPage({ params }) {
           <p className="text-xs text-gray-500">{new Date(blog.postCreateDate).toLocaleDateString('th-TH')}</p>
         </div>
       </div>
+      {/* <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border"> */}
+        {/* <p className="text-lg font-semibold ">ความคิดเห็น (3)</p>
+        <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">
+          good good good 
+          good good good 
+        </div> */}
+      {/* </div> */}
+
     </Layout>
   )
 }

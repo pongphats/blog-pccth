@@ -33,9 +33,17 @@ export default function BlogEditorPage({ params }) {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(blogData),
+      cache: 'no-store'
     });
 
     if (response.ok) {
+      await new Promise((resolve, reject) => {
+        return setTimeout(resolve, 100);
+      })
+      router.refresh()
+      await new Promise((resolve, reject) => {
+        return setTimeout(resolve, 100);
+      })
       router.push('/blogs');
     } else {
       console.error("Failed to save blog.");
@@ -85,7 +93,6 @@ export default function BlogEditorPage({ params }) {
   // if (isError) {
   //   return <div className="text-center">ไม่พบข้อมูล</div>;
   // }
-
 
   return (
     <div className="max-w-5xl mx-auto mt-5 space-y-4 p-10 bg-white rounded-lg shadow-md dark:bg-gray-800">
