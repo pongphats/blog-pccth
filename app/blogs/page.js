@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { SquarePlus } from 'lucide-react';
 import BlogCard from '../components/BlogCard';
 import Layout from './layout';
+import { Suspense } from 'react';
+import Loading from './loading';
 
 async function fetchBlogs() {
   const api = 'http://127.0.0.1:8080';
@@ -12,7 +14,7 @@ async function fetchBlogs() {
       throw new Error('Failed to fetch blogs');
     }
     const blogs = await response.json();
-    return blogs.sort((a, b) => a.id - b.id); 
+    return blogs.sort((a, b) => a.id - b.id);
   } catch (error) {
     console.error('Error fetching blogs:', error);
     return [];
@@ -20,8 +22,6 @@ async function fetchBlogs() {
 }
 
 export default async function BlogsPage() {
-  const blogs = await fetchBlogs();
-
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
     { label: 'บล็อก', href: '/blogs' },
@@ -36,6 +36,18 @@ export default async function BlogsPage() {
         </Link>
       </div>
 
+      <Suspense fallback={<Loading />}>
+        <BlogContent />
+      </Suspense>
+    </Layout>
+  );
+}
+
+async function BlogContent() {
+  const blogs = await fetchBlogs();
+
+  return (
+    <>
       {blogs.length > 0 ? (
         blogs.map((blog) => (
           <BlogCard blog={blog} key={blog.id} />
@@ -43,6 +55,6 @@ export default async function BlogsPage() {
       ) : (
         <p>No blogs available.</p>
       )}
-    </Layout>
+    </>
   );
 }
