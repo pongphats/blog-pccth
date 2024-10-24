@@ -22,7 +22,7 @@ export default function Loading() {
         </Link>
       </div>
       <ul>
-        {[...Array(4)].map((_, index) => (
+        {[...Array(3)].map((_, index) => (
           <SkeletonNews key={index} />
         ))}
       </ul>
