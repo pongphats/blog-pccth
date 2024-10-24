@@ -7,6 +7,7 @@ import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 import { revalidatePath } from "next/cache";
+import Loading from "@/app/components/Loading";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -14,6 +15,7 @@ export default function NewsEditorPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [labelText, setLabelText] = useState("เพิ่มข่าวสาร");
+  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const router = useRouter();
 
@@ -31,12 +33,19 @@ export default function NewsEditorPage() {
           setContent(data.newsBody);
         } catch (error) {
           console.error("Error fetching news item:", error);
+        } finally {
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 1000);
         }
       };
 
       fetchNewsItem();
     } else {
       setLabelText("เพิ่มข่าวสาร");
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   }, [id]);
 
@@ -82,6 +91,10 @@ export default function NewsEditorPage() {
 
   const modules = QuillModules;
   const formats = QuillFormats;
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="space-y-4 max-w-4xl mx-auto p-4 py-10">

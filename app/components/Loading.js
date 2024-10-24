@@ -1,27 +1,13 @@
 export default function Loading() {
   return (
-    <>
-      <style jsx>{`
-        .loader {
-          border: 16px solid #f3f3f3;
-          border-top: 16px solid #3498db;
-          border-radius: 50%;
-          width: 120px;
-          height: 120px;
-          animation: spin 2s linear infinite;
-          margin: auto;
-        }
-
-        @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-      <div class="loader"></div>
-    </>
+    <div className="flex items-center justify-center min-h-screen ">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+        <h2 className="text-xl font-semibold mt-4 text-gray-700">
+          กำลังโหลด...
+        </h2>
+        <p className="text-gray-500 mt-2">โปรดรอสักครู่</p>
+      </div>
+    </div>
   );
 }
