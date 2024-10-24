@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumb from "../../components/Breadcrumb";
-import Dialog from "../../components/Dialog"; // Import Dialog
+import Dialog from "../../components/Dialog";
+import SkeletonNewsDetail from "../../components/SkeletonNewsDetail"; // นำเข้าคอมโพเนนต์ใหม่
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);
+  const [loading, setLoading] = useState(true); // เพิ่มสถานะ loading
   const { id } = useParams();
   const router = useRouter();
 
@@ -23,9 +25,13 @@ export default function NewsPage() {
         try {
           const response = await fetch(`/api/news/${id}`);
           const data = await response.json();
+          // เพิ่ม delay 1000 มิลลิวินาที
+          await new Promise((resolve) => setTimeout(resolve, 1000));
           setNews(data);
         } catch (error) {
           console.error("Error fetching news item:", error);
+        } finally {
+          setLoading(false); // ตั้งค่า loading เป็น false เมื่อโหลดเสร็จ
         }
       };
 
@@ -69,7 +75,17 @@ export default function NewsPage() {
     }
   };
 
-  if (!news) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="p-4 my-10">
+        <Breadcrumb items={breadcrumbItems} />
+        <h1 className="text-2xl font-bold mb-4 mt-5">ข้อมูลข่าวสาร</h1>
+        <SkeletonNewsDetail />
+      </div>
+    );
+  }
+
+  if (!news) return <div>ไม่พบข้อมูลข่าวสาร</div>;
 
   return (
     <div className="p-4 my-10">

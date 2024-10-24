@@ -17,6 +17,8 @@ async function fetchNewsData() {
       throw new Error("ไม่สามารถดึงข้อมูลข่าวสารได้");
     }
     const data = await response.json();
+    // เพิ่ม delay 1 วินาที
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return data;
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลข่าวสาร:", error);
