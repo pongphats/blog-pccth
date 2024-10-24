@@ -15,7 +15,6 @@ export default function BlogEditorPage({ params }) {
   const id = params.id
   const [isEditMode, setEditMode] = useState(false);
   const [isLoading, setLoading] = useState(true)
-  // const [isError, setError] = useState(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -89,10 +88,6 @@ export default function BlogEditorPage({ params }) {
   if (isLoading) {
     return <div className="text-center">กำลังโหลด...</div>;
   }
-
-  // if (isError) {
-  //   return <div className="text-center">ไม่พบข้อมูล</div>;
-  // }
 
   return (
     <div className="max-w-5xl mx-auto mt-5 space-y-4 p-10 bg-white rounded-lg shadow-md dark:bg-gray-800">

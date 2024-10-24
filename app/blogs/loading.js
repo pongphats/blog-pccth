@@ -1,5 +1,6 @@
+import BlogSkeletonLoading from "../components/BlogSkeleton";
+
 export default function Loading() {
-    return "กำลังโหลด..."
-    // return <LoadingSkeleton />
+    return <BlogSkeletonLoading />
   }
   

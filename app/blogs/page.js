@@ -27,6 +27,9 @@ export default async function BlogsPage() {
     { label: 'บล็อก', href: '/blogs' },
   ];
 
+  const index = 1
+  const pageSize = 5
+
   return (
     <Layout breadcrumbItems={breadcrumbItems}>
       <div className="flex flex-row justify-between">
@@ -44,6 +47,8 @@ export default async function BlogsPage() {
 }
 
 async function BlogContent() {
+  await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+
   const blogs = await fetchBlogs();
 
   return (
