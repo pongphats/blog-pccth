@@ -48,7 +48,7 @@ export default async function NewsListPage() {
       </div>
       <ul>
         {newsData.map((news) => (
-          <NewCard key={news.id} news={news} />
+          <NewCard key={news.newsId} news={news} />
         ))}
       </ul>
     </div>
