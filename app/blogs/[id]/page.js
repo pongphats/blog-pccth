@@ -12,14 +12,17 @@ import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 import CommentCard from "@/app/components/CommentCard";
+import SkeletonNewsDetail from "@/app/components/SkeletonNewsDetail";
+import BlogByIdLoading from "@/app/components/Skeleton/BlogByIdLoading";
+import CommentBlogLoading from "@/app/components/Skeleton/CommentBlogLoading";
 
 export default function BlogPage({ params }) {
 
   const router = useRouter();
-
   const id = params.id
   const [blog, setBlog] = useState("")
-  const [isLoading, setLoading] = useState(true)
+  const [isLoadingBlog, setLoadingBlog] = useState(true)
+  const [isLoadingComment, setLoadingComment] = useState(true)
   const [isError, setError] = useState(null);
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState(null)
@@ -31,8 +34,8 @@ export default function BlogPage({ params }) {
   ];
 
   async function fetchBlogById(blogId) {
-
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await fetch(`/api/blog/${blogId}`);
 
       if (!response.ok) {
@@ -45,12 +48,13 @@ export default function BlogPage({ params }) {
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setLoadingBlog(false);
     }
   }
 
   async function fetchCommentsByBlogId(blogId) {
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await fetch(`http://localhost:8080/comment/getCommentByPostId/${blogId}`)
 
       if (!response.ok) {
@@ -63,6 +67,8 @@ export default function BlogPage({ params }) {
       console.log("response COMMENT", comments)
     } catch (error) {
       console.error("get comment error : ", error)
+    } finally {
+      setLoadingComment(false);
     }
   }
 
@@ -156,17 +162,12 @@ export default function BlogPage({ params }) {
   }
 
   useEffect(() => {
-    setLoading(true)
     fetchBlogById(id)
     fetchCommentsByBlogId(id)
   }, [id])
 
   const modules = QuillModules;
   const formats = QuillFormats;
-
-  if (isLoading) {
-    return <div className="text-center">กำลังโหลด...</div>;
-  }
 
   if (isError) {
     return <div className="text-center">
@@ -177,42 +178,57 @@ export default function BlogPage({ params }) {
 
   return (
     <Layout breadcrumbItems={breadcrumbItems}>
+      {isLoadingBlog ?
+        (
+          <BlogByIdLoading />
+        )
+        :
+        (
+          <>
+            <div className="flex flex-row justify-between">
+              <p className="text-3xl font-bold">{blog.postHeader}</p>
+              {/*Button edit Blog & Button delete Blog*/}
+              <div>
+                <Link href={`/blogs/editor/${blog.id}`}>
+                  <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
+                </Link>
+                <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600" onClick={handleDelete}><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
+              </div>
+            </div>
 
-      <div className="flex flex-row justify-between">
-        <p className="text-3xl font-bold">{blog.postHeader}</p>
-        {/*Button edit Blog & Button delete Blog*/}
-        <div>
-          <Link href={`/blogs/editor/${blog.id}`}>
-            <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
-          </Link>
-          <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600" onClick={handleDelete}><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
-        </div>
-      </div>
+            {/* details blog */}
 
-      {/* details blog */}
-      <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">
-        <div
-          className="px-2"
-          dangerouslySetInnerHTML={{ __html: blog.postBody }}
-        />
-        <div className="text-right mt-5">
-          <p className="text-sm">โดย {blog.postCreateBy}</p>
-          <p className="text-xs text-gray-500">
-            {new Date(blog.postCreateDate).toLocaleTimeString('th-TH')}
-          </p>
-          <p className="text-xs text-gray-500">{new Date(blog.postCreateDate).toLocaleDateString('th-TH')}</p>
-        </div>
-      </div>
+            <div className="mt-3 pt-8 px-8 pb-5 rounded border shadow dark:border">
+              <div
+                className="px-2"
+                dangerouslySetInnerHTML={{ __html: blog.postBody }}
+              />
+              <div className="text-right mt-5">
+                <p className="text-sm">โดย {blog.postCreateBy}</p>
+                <p className="text-xs text-gray-500">
+                  {new Date(blog.postCreateDate).toLocaleTimeString('th-TH')}
+                </p>
+                <p className="text-xs text-gray-500">{new Date(blog.postCreateDate).toLocaleDateString('th-TH')}</p>
+              </div>
+            </div>
+          </>
+        )}
 
       {/* comment */}
       <div className="mt-8 rounded dark:border">
-        <p className="text-lg font-semibold mt-5">ความคิดเห็น {comments.length > 0 ? "(" + comments.length + ")" : ""}</p>
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <CommentCard comment={comment} key={comment.id} onDelete={handleDeleteComment} />
-          ))
+        {isLoadingComment ? (
+          <CommentBlogLoading />
         ) : (
-          <p>No Comment available.</p>
+          <>
+            <p className="text-lg font-semibold mt-5">ความคิดเห็น {comments && comments.length > 0 ? "(" + comments.length + ")" : ""}</p>
+            {comments && comments.length > 0 ? (
+              comments.map((comment) => (
+                <CommentCard comment={comment} key={comment.id} onDelete={handleDeleteComment} />
+              ))
+            ) : (
+              <p>ไม่มีความคิดเห็น</p>
+            )}
+          </>
         )}
 
         {/* add comment */}
@@ -233,6 +249,6 @@ export default function BlogPage({ params }) {
         </div>
       </div>
 
-    </Layout>
+    </Layout >
   )
 }
