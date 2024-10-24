@@ -16,13 +16,13 @@ export default function Loading() {
         <h1 className="text-2xl font-bold mb-4 mt-5">ข้อมูลข่าวสาร</h1>
         <Link
           href="/news/editor"
-          className="inline-flex items-center px-4 py-3 border border-green-500 rounded mb-4 mt-5 hover:bg-green-500 hover:text-white"
+          className="inline-flex items-center px-2 py-2 border border-green-500  bg-green-500 rounded mb-4 mt-5 text-white "
         >
           <SquarePlus className="mr-2" /> เพิ่มข่าวสาร
         </Link>
       </div>
       <ul>
-        {[...Array(4)].map((_, index) => (
+        {[...Array(3)].map((_, index) => (
           <SkeletonNews key={index} />
         ))}
       </ul>
