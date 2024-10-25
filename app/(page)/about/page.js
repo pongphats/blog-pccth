@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Breadcrumb from '../components/Breadcrumb';
-import Link from 'next/link';
+import Breadcrumb from '@/app/components/Breadcrumb';
 import { Editor } from '@tinymce/tinymce-react';
 
 export default function About() {

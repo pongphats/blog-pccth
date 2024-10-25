@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import Breadcrumb from "../components/Breadcrumb";
+import Breadcrumb from "@/app/components/Breadcrumb";
 
 const COMMENTS_PER_PAGE = 3;
 

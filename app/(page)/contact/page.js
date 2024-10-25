@@ -1,4 +1,4 @@
-import Breadcrumb from '../components/Breadcrumb';
+import Breadcrumb from '@/app/components/Breadcrumb';
 
 export default function Contact() {
   const breadcrumbItems = [
