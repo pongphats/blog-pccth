@@ -6,6 +6,7 @@ import Notifications from "./components/Notifications";
 import { cookies } from "next/headers";
 import ThemeInitializer from "./components/ThemeInitializer";
 import { NextUIProvider } from '@nextui-org/react';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSansThai = Noto_Sans_Thai({
@@ -19,7 +20,6 @@ export default function RootLayout({ children }) {
   const isDarkMode = darkMode ? darkMode.value === "true" : false;
 
   return (
-
     <html lang="th" className={isDarkMode ? "dark" : ""}>
       <body className={notoSansThai.className}>
         <ThemeInitializer />
@@ -30,6 +30,5 @@ export default function RootLayout({ children }) {
         <Notifications />
       </body>
     </html>
-
   );
 }
