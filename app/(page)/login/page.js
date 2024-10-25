@@ -3,15 +3,44 @@
 import { useState } from 'react';
 import { Lock, UsersRound, LockKeyhole, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 export default function Login() {
-    const [email, setEmail] = useState('');
+    // const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleSubmit = (e) => {
+    const router = useRouter();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('เข้าสู่ระบบด้วย:', email, password);
+
+        try {
+            const response = await fetch("http://localhost:9091/api/app/token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("การลงทะเบียนล้มเหลว");
+            }
+
+            const data = await response.json();
+            console.log("สำเร็จ:", data);
+            router.push("/blogs"); // นำทางไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
+        } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
+        }
+
+
     };
 
     const togglePasswordVisibility = () => {
@@ -36,10 +65,9 @@ export default function Login() {
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 pl-10 pr-3 text-green-700 dark:text-green-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-green-500 dark:focus:border-green-400"
                                 id="email"
-                                type="email"
                                 placeholder="อีเมลของคุณ"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -87,10 +115,10 @@ export default function Login() {
                             เข้าสู่ระบบ
                         </button>
                     </div>
-                    
+
                     <div className="text-center mt-4">
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                            ยังไม่มีบัญชี? 
+                            ยังไม่มีบัญชี?
                         </span>
                         <Link href="/register" className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 ml-1">
                             ลงทะเบียน
