@@ -1,24 +1,64 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Loading from "../../components/Loading";
 
 export default function Register() {
+  const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!acceptTerms) {
-      alert("กรุณายอมรับข้อกำหนดและเงื่อนไขก่อนลงทะเบียน");
+      setError("กรุณายอมรับข้อกำหนดและเงื่อนไขก่อนลงทะเบียน");
       return;
     }
-    console.log("ลงทะเบียนด้วย:", firstName, lastName, email, password);
-    // ที่นี่คุณสามารถเพิ่มโค้ดสำหรับส่งข้อมูลไปยัง API ได้
+    setIsLoading(true);
+    setError("");
+    console.log("test", username, firstName, lastName, email, password);
+    try {
+      const response = await fetch("http://localhost:9091/api/app/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          firstName,
+          lastName,
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("การลงทะเบียนล้มเหลว");
+      }
+
+      const data = await response.json();
+      console.log("ลงทะเบียนสำเร็จ:", data);
+      router.push("/login"); // นำทางไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
+      setError("เกิดข้อผิดพลาดในการลงทะเบียน โปรดลองอีกครั้ง");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="font-[sans-serif] bg-white md:h-screen">
@@ -38,6 +78,36 @@ export default function Register() {
             </div>
 
             <div>
+              <label className="text-white text-xl block mb-2">
+                ชื่อผู้ใช้
+              </label>
+              <div className="relative flex items-center">
+                <input
+                  name="username"
+                  type="text"
+                  required
+                  className="w-full bg-transparent text-sm text-white border-b border-gray-300 focus:border-yellow-400 px-2 py-3 outline-none"
+                  placeholder="ชื่อผู้ใช้"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#bbb"
+                  stroke="#bbb"
+                  className="w-[18px] h-[18px] absolute right-2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
+                  <path
+                    d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                    data-original="#000000"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+
+            <div className="mt-8">
               <label className="text-white text-xl block mb-2">ชื่อ</label>
               <div className="relative flex items-center">
                 <input
@@ -185,12 +255,15 @@ export default function Register() {
               </label>
             </div>
 
+            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+
             <div className="mt-12">
               <button
                 type="submit"
                 className="w-max shadow-xl py-3 px-6 text-sm text-gray-800 font-semibold rounded-md bg-transparent bg-yellow-400 hover:bg-yellow-500 focus:outline-none"
+                disabled={isLoading}
               >
-                ลงทะเบียน
+                {isLoading ? "กำลังลงทะเบียน..." : "ลงทะเบียน"}
               </button>
               <p className="text-sm text-white mt-8">
                 มีบัญชีอยู่แล้ว?{" "}
