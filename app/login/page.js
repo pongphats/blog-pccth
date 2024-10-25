@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Lock, UsersRound, LockKeyhole, Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -85,6 +86,15 @@ export default function Login() {
                         >
                             เข้าสู่ระบบ
                         </button>
+                    </div>
+                    
+                    <div className="text-center mt-4">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                            ยังไม่มีบัญชี? 
+                        </span>
+                        <Link href="/register" className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 ml-1">
+                            ลงทะเบียน
+                        </Link>
                     </div>
                 </form>
             </div>
