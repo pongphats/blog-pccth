@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
-import { revalidatePath } from "next/cache";
 import Loading from "@/app/components/Loading";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });

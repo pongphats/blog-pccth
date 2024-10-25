@@ -1,5 +1,5 @@
-import SkeletonNews from "../components/Skeleton/SkeletonNews";
-import Breadcrumb from "../components/Breadcrumb";
+import SkeletonNews from "@/app/components/Skeleton/SkeletonNews";
+import Breadcrumb from "@/app/components/Breadcrumb";
 import Link from "next/link";
 import { SquarePlus } from "lucide-react";
 

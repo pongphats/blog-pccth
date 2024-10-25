@@ -12,7 +12,6 @@ import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 export default function BlogEditorPage({ params }) {
   const router = useRouter();
   const id = params.id;
-  const [isEditMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -20,11 +19,9 @@ export default function BlogEditorPage({ params }) {
 
   useEffect(() => {
     if (id) {
-      setEditMode(true);
       setLabelText("แก้ไขบทความ");
       fetchBlogById(id);
     } else {
-      setEditMode(false);
       setLabelText("สร้างบทความใหม่");
       setTimeout(() => {
         setIsLoading(false);
@@ -90,35 +87,35 @@ export default function BlogEditorPage({ params }) {
 
   return (
     <div className="space-y-4 max-w-4xl mx-auto p-4 py-10">
-      <div className="bg-gray-100 p-4 rounded-md">
+      <div className="bg-gray-100 dark:bg-gray-800 border p-4 rounded-md">
         <label
           htmlFor="header"
-          className="block text-2xl font-medium mb-2 text-gray-900 text-center"
+          className="block text-2xl font-medium mb-2 text-gray-900 dark:text-white text-center"
         >
           {labelText}
         </label>
-        <div className="bg-white m-5 p-5 rounded-md">
+        <div className="bg-white dark:bg-gray-900 m-5 p-5 rounded-md">
           <label
             htmlFor="title"
-            className="block text-2xl font-medium mb-2 text-gray-900"
+            className="block text-2xl font-medium mb-2 text-gray-900 dark:text-white"
           >
             กรอกหัวข้อ
           </label>
-          <div className="border border-gray-300 p-2 dark:border-none">
+          <div className="border dark:border-none p-2">
             <input
               id="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="ชื่อบทความ"
-              className="w-full text-xl font-bold p-2 border-none focus:outline-none rounded dark:bg-gray-900"
+              className="w-full text-xl font-bold p-2 border-none focus:outline-none rounded dark:bg-gray-800"
             />
           </div>
         </div>
-        <div className="bg-white m-5 p-5 rounded-md">
+        <div className="bg-white  dark:bg-gray-900 m-5 p-5 rounded-md">
           <label
             htmlFor="body"
-            className="block text-2xl font-medium mb-2 text-gray-900"
+            className="block text-2xl font-medium mb-2 text-gray-900 dark:text-white"
           >
             เนื้อหาบทความ
           </label>

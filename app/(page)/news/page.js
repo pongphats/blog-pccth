@@ -1,5 +1,5 @@
-import NewCard from "../components/Newcard";
-import Breadcrumb from "../components/Breadcrumb";
+import NewCard from "@/app/components/Newcard";
+import Breadcrumb from "@/app/components/Breadcrumb";
 import Link from "next/link";
 import { SquarePlus } from "lucide-react";
 

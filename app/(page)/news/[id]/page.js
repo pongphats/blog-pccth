@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Breadcrumb from "../../components/Breadcrumb";
-import Dialog from "../../components/Dialog";
-import SkeletonNewsDetail from "../../components/Skeleton/SkeletonNewsDetail"; // นำเข้าคอมโพเนนต์ใหม่
+import Breadcrumb from "@/app/components/Breadcrumb";
+import Dialog from "@/app/components/Dialog";
+import SkeletonNewsDetail from "@/app/components/Skeleton/SkeletonNewsDetail";// นำเข้าคอมโพเนนต์ใหม่
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);

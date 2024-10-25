@@ -1,7 +1,7 @@
 // app/blogs/page.js
 import Link from 'next/link';
 import { SquarePlus } from 'lucide-react';
-import BlogCard from '../components/BlogCard';
+import BlogCard from '../../components/BlogCard';
 import Layout from './layout';
 import { Suspense } from 'react';
 import Loading from './loading';
