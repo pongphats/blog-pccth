@@ -214,7 +214,7 @@ export default function BlogPage({ params }) {
         )}
 
       {/* comment */}
-      <div className="mt-8 rounded dark:border">
+      <div className="mt-8 rounded">
         {isLoadingComment ? (
           <CommentBlogLoading />
         ) : (
