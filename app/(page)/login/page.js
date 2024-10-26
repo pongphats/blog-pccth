@@ -34,7 +34,11 @@ export default function Login() {
             }
 
             const data = await response.json();
+            
             console.log("สำเร็จ:", data);
+
+            localStorage.setItem('token', data.access_token)
+
             router.push("/blogs"); // นำทางไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
