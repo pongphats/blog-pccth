@@ -23,7 +23,7 @@ async function fetchNewsData() {
     const data = await response.json();
     // เพิ่ม delay 1 วินาที
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    return data;
+    return data.sort((a, b) => a.newsId - b.newsId);
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลข่าวสาร:", error);
     return [];

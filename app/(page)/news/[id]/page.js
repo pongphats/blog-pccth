@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumb from "@/app/components/Breadcrumb";
 import Dialog from "@/app/components/Dialog";
-import SkeletonNewsDetail from "@/app/components/Skeleton/SkeletonNewsDetail";// นำเข้าคอมโพเนนต์ใหม่
+import SkeletonNewsDetail from "@/app/components/Skeleton/SkeletonNewsDetail"; // นำเข้าคอมโพเนนต์ใหม่
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);
@@ -23,7 +23,12 @@ export default function NewsPage() {
     if (id) {
       const fetchNewsItem = async () => {
         try {
-          const response = await fetch(`/api/news/${id}`);
+          const token = localStorage.getItem("token");
+          const response = await fetch(`/api/news/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           const data = await response.json();
           // เพิ่ม delay 1000 มิลลิวินาที
           await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -47,10 +52,13 @@ export default function NewsPage() {
 
     if (confirmed) {
       try {
+        const token = localStorage.getItem("token");
+        console.log(token);
         const response = await fetch(`/api/news/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
