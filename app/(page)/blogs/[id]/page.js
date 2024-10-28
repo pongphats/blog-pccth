@@ -26,6 +26,7 @@ export default function BlogPage({ params }) {
   const [isError, setError] = useState(null);
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState(null)
+  const [token, setToken] = useState("");
 
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
@@ -36,7 +37,13 @@ export default function BlogPage({ params }) {
   async function fetchBlogById(blogId) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await fetch(`/api/blog/${blogId}`);
+      const response = await fetch(`/api/blog/${blogId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // ส่ง token ใน headers
+        },
+        cache: "no-store",
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -75,10 +82,14 @@ export default function BlogPage({ params }) {
   async function handleDelete() {
     const confirmed = await Dialog.confirm("คุณต้องการลบบล็อกนี้หรือไม่?", `หัวข้อ :${blog.postHeader}`);
     if (confirmed) {
-      setLoading(true)
+      setLoadingBlog(true)
       try {
         const response = await fetch(`/api/blog/${id}`, {
           method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
         });
 
         if (!response.ok) {
@@ -99,7 +110,7 @@ export default function BlogPage({ params }) {
       } catch (error) {
         console.error("Error deleting blog:", error);
       } finally {
-        setLoading(false)
+        setLoadingBlog(false)
       }
     }
   }
@@ -162,9 +173,17 @@ export default function BlogPage({ params }) {
   }
 
   useEffect(() => {
-    fetchBlogById(id)
-    fetchCommentsByBlogId(id)
-  }, [id])
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      console.log(id)
+      fetchBlogById(id)
+    }
+    // fetchCommentsByBlogId(id)
+  }, [id, token])
 
   const modules = QuillModules;
   const formats = QuillFormats;
@@ -215,7 +234,7 @@ export default function BlogPage({ params }) {
 
       {/* comment */}
       <div className="mt-8 rounded">
-        {isLoadingComment ? (
+        {/* {isLoadingComment ? (
           <CommentBlogLoading />
         ) : (
           <>
@@ -228,10 +247,10 @@ export default function BlogPage({ params }) {
               <p>ไม่มีความคิดเห็น</p>
             )}
           </>
-        )}
+        )} */}
 
         {/* add comment */}
-        <div className="m-3 mt-5">
+        {/* <div className="m-3 mt-5">
           <p>แสดงความคิดเห็น :</p>
           <div className="quill-editor mt-4">
             <ReactQuill
@@ -245,7 +264,7 @@ export default function BlogPage({ params }) {
         </div>
         <div className="flex justify-end m-3">
           <button className="bg-blue-500 active:bg-blue-600 text-white p-2 rounded mr-2" onClick={handleCreateComment}>เพิ่มความคิดเห็น</button>
-        </div>
+        </div> */}
       </div>
 
     </Layout >
