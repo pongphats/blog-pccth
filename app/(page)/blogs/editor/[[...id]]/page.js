@@ -12,32 +12,36 @@ import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 export default function BlogEditorPage({ params }) {
   const router = useRouter();
   const id = params.id;
-  const [token, setToken] = useState(""); // สถานะสำหรับเก็บ token
   const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [labelText, setLabelText] = useState("สร้างบทความใหม่");
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken);
-  }, []);
 
   useEffect(() => {
     if (id) {
       setLabelText("แก้ไขบทความ");
+      console.log("แก้ไขบทความ");
       fetchBlogById(id);
     } else {
       setLabelText("สร้างบทความใหม่");
+      console.log("สร้างบทความใหม่");
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
     }
-  }, [id]);
+  }, [id]); // เพิ่ม token ใน dependencies
 
   async function fetchBlogById(blogId) {
     try {
-      const response = await fetch(`/api/blog/${blogId}`);
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/blog/${blogId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // ส่ง token ใน headers
+        },
+        cache: "no-store",
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch blog item");
       }
@@ -63,6 +67,9 @@ export default function BlogEditorPage({ params }) {
       body: content
     };
 
+    const token = localStorage.getItem("token");
+    console.log("token",token)
+
     const response = await fetch(apiUrl, {
       method,
       headers: {
@@ -75,11 +82,11 @@ export default function BlogEditorPage({ params }) {
 
     if (response.ok) {
       await new Promise((resolve, reject) => {
-        return setTimeout(resolve, 100);
+        return setTimeout(resolve, 500);
       })
       router.refresh()
       await new Promise((resolve, reject) => {
-        return setTimeout(resolve, 100);
+        return setTimeout(resolve, 500);
       })
       router.push('/blogs');
     } else {

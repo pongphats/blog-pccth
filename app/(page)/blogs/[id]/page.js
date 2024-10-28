@@ -99,11 +99,11 @@ export default function BlogPage({ params }) {
 
         await Dialog.success('ลบแล้ว!', 'บล็อกของคุณถูกลบแล้ว.');
         await new Promise((resolve, reject) => {
-          return setTimeout(resolve, 100);
+          return setTimeout(resolve, 500);
         })
         router.refresh()
         await new Promise((resolve, reject) => {
-          return setTimeout(resolve, 100);
+          return setTimeout(resolve, 500);
         })
         router.push('/blogs');
 
