@@ -3,13 +3,6 @@ import { NextResponse } from "next/server";
 
 let newsData = [];
 
-// GET: Fetch all news
-// export async function GET() {
-//   await fetchNewsFromAPI(); // ดึงข้อมูลก่อนส่งกลับ
-//   console.log("Returning news data:", newsData); // ตรวจสอบข้อมูลที่ส่งกลับ
-//   return NextResponse.json(newsData);
-// }
-
 export async function GET(req) {
   try {
     const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
@@ -53,28 +46,44 @@ export async function GET(req) {
 
 // POST: Create a new news item
 export async function POST(request) {
-  const newNews = await request.json();
   try {
-    console.log(newNews);
-    const response = await fetch("http://127.0.0.1:8080/news/createNews", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNews),
-    });
+    const token = request.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "ไม่พบ Token การยืนยันตัวตน" },
+        { status: 401 }
+      );
+    }
+
+    const newNews = await request.json();
+    const response = await fetch(
+      `${process.env.BACKEND_HOST}/news/createNews`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // เพิ่ม token ในส่วน headers
+        },
+        body: JSON.stringify(newNews),
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to create news");
+      const error = await response.text();
+      throw new Error(error || "ไม่สามารถสร้างข่าวใหม่ได้");
     }
 
     const createdNews = await response.json();
-    newsData.push(createdNews); // Update local newsData with the created news
+    newsData.push(createdNews);
     return NextResponse.json(createdNews, { status: 201 });
   } catch (error) {
     console.error("Error creating news:", error);
     return NextResponse.json(
-      { error: "Failed to create news" },
+      {
+        message: "เกิดข้อผิดพลาดในการสร้างข่าว",
+        error: error.message,
+      },
       { status: 500 }
     );
   }

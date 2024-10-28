@@ -23,7 +23,13 @@ export default function NewsEditorPage() {
       setLabelText("แก้ไขข่าวสาร");
       const fetchNewsItem = async () => {
         try {
-          const response = await fetch(`/api/news/${id}`);
+          // รับ token จาก localStorage
+          const token = localStorage.getItem("token");
+          const response = await fetch(`/api/news/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           if (!response.ok) {
             throw new Error("Failed to fetch news item");
           }
@@ -50,38 +56,43 @@ export default function NewsEditorPage() {
 
   const handleSave = async () => {
     const newsData = {
-      id, // Ensure the ID is included for the PUT request
+      id,
       newsHeader: title,
-      newsBody: content, // Store HTML content directly
+      newsBody: content,
       date: new Date().toISOString().split("T")[0],
     };
 
     try {
+      // รับ token จาก localStorage
+      const token = localStorage.getItem("token");
       const response = id
         ? await fetch(`/api/news/${id}`, {
-            // Use id directly if it's not an array
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify(newsData),
             cache: "no-store",
           })
         : await fetch("/api/news", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify(newsData),
           });
 
       if (response.ok) {
-        await new Promise((resolve, reject) => {
-          return setTimeout(resolve, 100);
-        });
+        await new Promise((resolve) => setTimeout(resolve, 100));
         router.refresh();
-        await new Promise((resolve, reject) => {
-          return setTimeout(resolve, 100);
-        });
+        await new Promise((resolve) => setTimeout(resolve, 100));
         router.push("/news");
       } else {
-        console.error("Error saving news item");
+        const errorData = await response.json();
+        console.error("Error saving news item:", errorData);
+        // อาจจะเพิ่มการแสดง error message ให้ผู้ใช้ทราบ
       }
     } catch (error) {
       console.error("Error saving news item:", error);
