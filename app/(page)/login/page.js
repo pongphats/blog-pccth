@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Lock, UsersRound, LockKeyhole, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
+// import { setAuthToken } from '@/app/utils/cookie';
 
 export default function Login() {
     // const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('เข้าสู่ระบบด้วย:', email, password);
+        console.log('เข้าสู่ระบบด้วย:', username, password);
 
         try {
             const response = await fetch("http://localhost:9091/api/app/token", {
@@ -34,17 +35,17 @@ export default function Login() {
             }
 
             const data = await response.json();
-            
+
             console.log("สำเร็จ:", data);
 
-            localStorage.setItem('token', data.access_token)
+            localStorage.setItem('token', data.access_token) //ใช้ใน middleware ไม่ได้
+            // setAuthToken(data.access_token)
+            document.cookie = `token=${data.access_token}; path=/;`;
 
-            router.push("/blogs"); // นำทางไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
+            router.push("/");
         } catch (error) {
             console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
         }
-
-
     };
 
     const togglePasswordVisibility = () => {

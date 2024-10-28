@@ -12,10 +12,16 @@ import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
 export default function BlogEditorPage({ params }) {
   const router = useRouter();
   const id = params.id;
+  const [token, setToken] = useState(""); // สถานะสำหรับเก็บ token
   const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [labelText, setLabelText] = useState("สร้างบทความใหม่");
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -59,7 +65,10 @@ export default function BlogEditorPage({ params }) {
 
     const response = await fetch(apiUrl, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify(blogData),
       cache: 'no-store'
     });

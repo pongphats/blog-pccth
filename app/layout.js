@@ -6,7 +6,7 @@ import Notifications from "./components/Notifications";
 import { cookies } from "next/headers";
 import ThemeInitializer from "./components/ThemeInitializer";
 import { NextUIProvider } from '@nextui-org/react';
-import Link from 'next/link';
+
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSansThai = Noto_Sans_Thai({

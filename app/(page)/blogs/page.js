@@ -7,9 +7,12 @@ import { Suspense } from 'react';
 import Loading from './loading';
 
 async function fetchBlogs() {
-  const api = 'http://127.0.0.1:8080';
   try {
-    const response = await fetch(`${api}/posts/getAllPosts`, { cache: 'no-store' });
+    const response = await fetch(`http://localhost:3000/api/blog`, {
+      method: 'GET',
+
+      cache: 'no-store',
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch blogs');
     }
@@ -42,6 +45,7 @@ export default async function BlogsPage() {
     </Layout>
   );
 }
+
 async function BlogContent() {
   await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
 
