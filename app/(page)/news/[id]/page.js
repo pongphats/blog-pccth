@@ -28,6 +28,7 @@ export default function NewsPage() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            cache: "no-store",
           });
           const data = await response.json();
           // เพิ่ม delay 1000 มิลลิวินาที
