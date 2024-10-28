@@ -3,21 +3,18 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
-const api = 'http://127.0.0.1:8080'
-
 // GET: Fetch all blog posts
 export async function GET() {
     try {
         const token = cookies().get('token')?.value;
         console.log(token)
         // const response = await fetch(`${api}/posts/getAllPosts`);
-        const response = await fetch(`${api}/posts/getAllPosts`, {
+        const response = await fetch(`${process.env.BACKEND_HOST}/posts/getAllPosts`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            cache: 'no-store',
         });
         if (!response.ok) {
             throw new Error('Failed to fetch data from the API');

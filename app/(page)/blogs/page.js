@@ -8,9 +8,8 @@ import Loading from './loading';
 
 async function fetchBlogs() {
   try {
-    const response = await fetch(`http://localhost:3000/api/blog`, {
+    const response = await fetch(`${process.env.PUBLIC_HOST}/api/blog`, {
       method: 'GET',
-
       cache: 'no-store',
     });
     if (!response.ok) {
