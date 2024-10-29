@@ -1,113 +1,147 @@
 "use client";
 
+import { useState } from "react";
+import { Lock, UsersRound, LockKeyhole, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+// import { setAuthToken } from '@/app/utils/cookie';
 
-export default function Home() {
-  const [userCount, setUserCount] = useState(0);
-  const [commentCount, setCommentCount] = useState(0);
-  const [notificationCount, setNotificationCount] = useState(0);
+export default function Login() {
+  // const [email, setEmail] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const router = useRouter();
 
-  const fetchData = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("เข้าสู่ระบบด้วย:", username, password);
+
     try {
-      const usersResponse = await fetch("/json/users.json");
-      const users = await usersResponse.json();
-      setUserCount(users.length);
+      const response = await fetch("http://localhost:9091/api/app/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
 
-      const commentsResponse = await fetch("/json/contact_data.json");
-      const comments = await commentsResponse.json();
-      setCommentCount(comments.length);
+      if (!response.ok) {
+        throw new Error("การลงทะเบียนล้มเหลว");
+      }
 
-      const notificationsResponse = await fetch("/api/notifications");
-      const notifications = await notificationsResponse.json();
-      setNotificationCount(notifications.length);
+      const data = await response.json();
+
+      console.log("สำเร็จ:", data);
+
+      localStorage.setItem("token", data.access_token);
+      router.push("/home");
     } catch (error) {
-      console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+      console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div className="p-4 dark:text-white">
-      <h1 className="text-3xl font-bold mb-6">แดชบอร์ด</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-blue-100 dark:bg-blue-800 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-2 text-blue-800 dark:text-blue-200">
-            จำนวนผู้ใช้
+    <div className="flex min-h-screen items-center justify-center bg-green-50 dark:bg-gray-900">
+      <div className="w-full max-w-md">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        >
+          <div className="flex justify-center mb-6">
+            <div className="bg-green-500 dark:bg-green-600 rounded-full p-3">
+              <Lock className="text-white" size={24} />
+            </div>
+          </div>
+          <h2 className="text-2xl mb-6 text-center font-bold text-green-800 dark:text-green-300">
+            เข้าสู่ระบบ
           </h2>
-          <p className="text-4xl font-bold text-blue-600 dark:text-blue-300">
-            {userCount}
-          </p>
-          <Link
-            href="/users"
-            className="text-blue-500 hover:underline mt-2 inline-block"
-          >
-            ดูรายชื่อผู้ใช้ทั้งหมด
-          </Link>
-        </div>
-
-        <div className="bg-green-100 dark:bg-green-800 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-2 text-green-800 dark:text-green-200">
-            จำนวนความคิดเห็น
-          </h2>
-          <p className="text-4xl font-bold text-green-600 dark:text-green-300">
-            {commentCount}
-          </p>
-          <Link
-            href="/comment"
-            className="text-green-500 hover:underline mt-2 inline-block"
-          >
-            ดูความคิดเห็นทั้งหมด
-          </Link>
-        </div>
-
-        <div className="bg-yellow-100 dark:bg-yellow-800 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-2 text-yellow-800 dark:text-yellow-200">
-            จำนวนการแจ้งเตือน
-          </h2>
-          <p className="text-4xl font-bold text-yellow-600 dark:text-yellow-300">
-            {notificationCount}
-          </p>
-          <Link
-            href="/notifications"
-            className="text-yellow-500 hover:underline mt-2 inline-block"
-          >
-            ดูการแจ้งเตือนทั้งหมด
-          </Link>
-        </div>
-      </div>
-
-      <nav>
-        <ul className="space-y-2">
-          <li>
-            <Link href="/users" className="text-blue-500 hover:underline">
-              จัดการรายชื่อผู้ใช้
-            </Link>
-          </li>
-          <li>
-            <Link href="/comment" className="text-green-500 hover:underline">
-              จัดการความคิดเห็น
-            </Link>
-          </li>
-          <li>
-            <Link href="/about" className="text-purple-500 hover:underline">
-              เกี่ยวกับเรา
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/notifications"
-              className="text-yellow-500 hover:underline"
+          <div className="mb-4 relative">
+            <label
+              className="block text-green-700 dark:text-green-300 text-sm font-bold mb-2"
+              htmlFor="email"
             >
-              การแจ้งเตือน
+              อีเมล
+            </label>
+            <div className="relative">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 pl-10 pr-3 text-green-700 dark:text-green-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-green-500 dark:focus:border-green-400"
+                id="email"
+                placeholder="อีเมลของคุณ"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <UsersRound className="h-5 w-5 text-green-400 dark:text-green-300" />
+              </div>
+            </div>
+          </div>
+          <div className="mb-6 relative">
+            <label
+              className="block text-green-700 dark:text-green-300 text-sm font-bold mb-2"
+              htmlFor="password"
+            >
+              รหัสผ่าน
+            </label>
+            <div className="relative mb-3">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 pl-10 pr-10 text-green-700 dark:text-green-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-green-500 dark:focus:border-green-400"
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="รหัสผ่านของคุณ"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <LockKeyhole className="h-5 w-5 text-green-400 dark:text-green-300" />
+              </div>
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="text-green-400 dark:text-green-300 hover:text-green-600 dark:hover:text-green-400 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <Eye className="h-5 w-5" />
+                  ) : (
+                    <EyeOff className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="flex w-full">
+            <button
+              className="w-full bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              เข้าสู่ระบบ
+            </button>
+          </div>
+
+          <div className="text-center mt-4">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              ยังไม่มีบัญชี?
+            </span>
+            <Link
+              href="/register"
+              className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 ml-1"
+            >
+              ลงทะเบียน
             </Link>
-          </li>
-        </ul>
-      </nav>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -37,15 +37,17 @@ const Navigation = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("/api/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        if (token) {
+          const response = await fetch("/api/profile", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
-        if (response.ok) {
-          const data = await response.json();
-          setUserProfile(data);
+          if (response.ok) {
+            const data = await response.json();
+            setUserProfile(data);
+          }
         }
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -57,7 +59,8 @@ const Navigation = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push("/");
+    setUserProfile(null);
   };
 
   return (
@@ -113,41 +116,51 @@ const Navigation = () => {
         <NavbarItem>
           <ThemeToggle aria-label="เปลี่ยนธีม" />
         </NavbarItem>
-        <NavbarItem>
-          <Popover placement="bottom-end">
-            <PopoverTrigger>
-              <Button variant="light" isIconOnly className="text-white">
-                <Avatar
-                  size="sm"
-                  src="https://i.pravatar.cc/150"
-                  className="cursor-pointer"
-                />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="p-4 w-64">
-              <div className="flex flex-col items-center gap-4">
-                <Avatar src="https://i.pravatar.cc/150" className="w-20 h-20" />
-                {userProfile && (
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold">
-                      {userProfile.name}
-                    </h3>
-                    <p className="text-sm text-gray-500">{userProfile.email}</p>
-                  </div>
-                )}
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onPress={handleLogout}
-                  className="w-full mt-2"
-                  size="sm"
-                >
-                  ออกจากระบบ
+
+        {userProfile ? (
+          <NavbarItem>
+            <Popover placement="bottom-end">
+              <PopoverTrigger>
+                <Button variant="light" isIconOnly className="text-white">
+                  <Avatar
+                    size="sm"
+                    src="https://i.pravatar.cc/150"
+                    className="cursor-pointer"
+                  />
                 </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </NavbarItem>
+              </PopoverTrigger>
+              <PopoverContent className="p-4 w-64">
+                <div className="flex flex-col items-center gap-4">
+                  <Avatar
+                    src="https://i.pravatar.cc/150"
+                    className="w-20 h-20"
+                  />
+                  {userProfile && (
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold">
+                        {userProfile.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {userProfile.email}
+                      </p>
+                    </div>
+                  )}
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={handleLogout}
+                    className="w-full mt-2"
+                    size="sm"
+                  >
+                    ออกจากระบบ
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </NavbarItem>
+        ) : (
+          <></>
+        )}
       </NavbarContent>
     </Navbar>
   );
