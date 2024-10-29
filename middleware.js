@@ -12,18 +12,18 @@ export async function middleware(request) {
     }
 
     const isTokenExpired = checkTokenExpiration(accessToken);
-    console.log("is token Expired:", isTokenExpired);
-    console.log("current access token:", accessToken);
-    console.log("current refresh token:", refreshToken);
+    // console.log("is token Expired:", isTokenExpired);
+    // console.log("current access token:", accessToken);
+    // console.log("current refresh token:", refreshToken);
 
     if (isTokenExpired && refreshToken) {
-      console.log("refresh is fetching...");
+      // console.log("refresh is fetching...");
 
       const tokens = await getNewAccessToken(refreshToken);
       response.cookies.set("token", tokens.access_token);
       response.cookies.set("refresh_token", tokens.refresh_token);
 
-      console.log("refresh is fetch success");
+      // console.log("refresh is fetch success");
     }
     return response;
   } catch (error) {

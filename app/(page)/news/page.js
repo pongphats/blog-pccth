@@ -8,7 +8,7 @@ export default async function NewsListPage() {
   const newsData = await fetchNewsData();
 
   const breadcrumbItems = [
-    { label: "หน้าหลัก", href: "/" },
+    { label: "หน้าหลัก", href: "/home" },
     { label: "หน้าข่าวสาร", href: "/news" },
   ];
 
