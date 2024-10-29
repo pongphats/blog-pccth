@@ -20,7 +20,7 @@ import NotificationButton from "./NotificationButton";
 import { useRouter } from "next/navigation";
 
 const navLinks = [
-  { href: "/", label: "หน้าหลัก" },
+  { href: "/home", label: "หน้าหลัก" },
   { href: "/users", label: "รายชื่อผู้ใช้" },
   { href: "/comment", label: "แสดงความคิดเห็น" },
   { href: "/about", label: "เกี่ยวกับเรา" },

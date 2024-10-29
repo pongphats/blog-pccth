@@ -6,6 +6,7 @@ import Notifications from "./components/Notifications";
 import { cookies } from "next/headers";
 import ThemeInitializer from "./components/ThemeInitializer";
 import { NextUIProvider } from "@nextui-org/react";
+import TokenManager from "./components/TokenManager";
 
 const inter = Inter({ subsets: ["latin"] });
 const notoSansThai = Noto_Sans_Thai({
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="th" className={isDarkMode ? "dark" : ""}>
       <body className={notoSansThai.className}>
+        <TokenManager />
         <ThemeInitializer />
         <NextUIProvider>
           <main>{children}</main>
