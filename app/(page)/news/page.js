@@ -2,29 +2,7 @@ import NewCard from "@/app/components/Newcard";
 import Breadcrumb from "@/app/components/Breadcrumb";
 import Link from "next/link";
 import { SquarePlus } from "lucide-react";
-import { cookies } from "next/headers";
-
-// ฟังก์ชันสำหรับดึงข้อมูลข่าวสาร
-async function fetchNewsData() {
-  try {
-    // เพิ่ม timestamp เพื่อป้องกันการแคช
-    const response = await fetch(`${process.env.PUBLIC_HOST}/api/news`, {
-      method: "GET",
-      cache: "no-store",
-      next: { revalidate: 0 },
-    });
-    if (!response.ok) {
-      throw new Error("ไม่สามารถดึงข้อมูลข่าวสารได้");
-    }
-    const data = await response.json();
-    // เพิ่ม delay 1 วินาที
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return data.data.sort((a, b) => a.newsId - b.newsId);
-  } catch (error) {
-    console.error("เกิดข้อผิดพลาดในการดึงข้อมูลข่าวสาร:", error);
-    return [];
-  }
-}
+import { fetchNewsData } from "@/actions/fetch";
 
 export default async function NewsListPage() {
   const newsData = await fetchNewsData();

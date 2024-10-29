@@ -16,9 +16,9 @@ export function middleware(request) {
     }
 
     // Redirect ไปที่หน้า login ถ้าผู้ใช้ไม่มี token ที่ถูกต้อง
-    if (pathname !== '/login' && pathname !== '/register') {
-        return NextResponse.redirect(new URL('/login', request.url));
-    }
+    // if (pathname !== '/login' && pathname !== '/register') {
+    //     return NextResponse.redirect(new URL('/', request.url));
+    // }
 
     return NextResponse.next();
 }
