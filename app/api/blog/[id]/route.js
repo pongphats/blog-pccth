@@ -2,14 +2,30 @@
 
 import { NextResponse } from 'next/server';
 
-const api = 'http://127.0.0.1:8080'
-
-export async function GET(request, { params }) {
-    const { id } = params;
-    const blogId = parseInt(id, 10); //10 คือ เลขฐานสิบ
+export async function GET(req, { params }) {
 
     try {
-        const response = await fetch(`${api}/posts/getPostById/${blogId}`, { cache: 'no-store' });
+        const { id } = params;
+        const blogId = parseInt(id, 10); //10 คือ เลขฐานสิบ
+        console.log("GET BY id", blogId)
+
+        const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
+        console.log("GET BY token", token)
+        if (!token) {
+            return NextResponse.json(
+                { message: "ไม่พบ Token การยืนยันตัวตน" },
+                { status: 401 }
+            );
+        }
+
+        const response = await fetch(`${process.env.BACKEND_HOST}/posts/getPostById/${blogId}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
 
         if (!response.ok) {
             const errorData = await response.json();
@@ -28,10 +44,19 @@ export async function GET(request, { params }) {
     }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(req, { params }) {
     const { id } = params;
     const blogId = parseInt(id, 10); //10 คือ เลขฐานสิบ
-    const newBlog = await request.json();
+    const newBlog = await req.json();
+
+    const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
+    console.log("PUT BY token", token)
+    if (!token) {
+        return NextResponse.json(
+            { message: "ไม่พบ Token การยืนยันตัวตน" },
+            { status: 401 }
+        );
+    }
 
     try {
         const reqData = {
@@ -39,10 +64,11 @@ export async function PUT(request, { params }) {
             PostBody: newBlog.body,
         }
 
-        const response = await fetch(`${api}/posts/updatePost/${blogId}`, {
+        const response = await fetch(`${process.env.BACKEND_HOST}/posts/updatePost/${blogId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(reqData),
         });
@@ -58,15 +84,27 @@ export async function PUT(request, { params }) {
     }
 }
 
-export async function DELETE(request, { params }) {
-    const { id } = params;
-    const blogId = parseInt(id, 10);
-
+export async function DELETE(req, { params }) {
     try {
-        const response = await fetch(`${api}/posts/deletePost/${blogId}`, {
+        const { id } = params;
+        const blogId = parseInt(id, 10);
+        console.log("id", blogId)
+
+        const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
+
+        if (!token) {
+            return NextResponse.json(
+                { message: "ไม่พบ Token การยืนยันตัวตน" },
+                { status: 401 }
+            );
+        }
+        const response = await fetch(`${process.env.BACKEND_HOST}/posts/deletePost/${blogId}`, {
             method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
-        console.log(await response.json())
 
         return NextResponse.json({ message: "Blog deleted successfully" }, { status: 200 });
     } catch (error) {

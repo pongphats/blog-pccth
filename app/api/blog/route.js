@@ -32,6 +32,7 @@ export async function GET(req) {
     }
 
     const blogs = await response.json();
+    console.log("in")
     return NextResponse.json(blogs);
   } catch (error) {
     console.error("Blog API Error:", error);
