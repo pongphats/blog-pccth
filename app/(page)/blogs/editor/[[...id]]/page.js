@@ -7,7 +7,7 @@ import Loading from "@/app/components/Loading";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
-import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
+import { QuillFormats, QuillModules } from "@/utils/QuillConstants";
 
 export default function BlogEditorPage({ params }) {
   const router = useRouter();

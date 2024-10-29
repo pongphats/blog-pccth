@@ -5,7 +5,7 @@ import "react-quill/dist/quill.snow.css";
 
 import "react-quill/dist/quill.snow.css"; // Quill CSS
 import "@/app/styles/quill.css";
-import { formatDate } from "../utils/dateUtils";
+import { formatDate } from "@/utils/dateUtils";
 export default function BlogCard({ blog }) {
     return (
         <div className="py-5 px-5 m-2 my-5 rounded border shadow-lg dark:border">

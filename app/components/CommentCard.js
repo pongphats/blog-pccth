@@ -1,7 +1,7 @@
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/avatar";
 import { Trash2 } from 'lucide-react';
 import { Tooltip } from "@nextui-org/react";
-import { formatDateAndTime } from "../utils/dateUtils";
+import { formatDateAndTime } from "@/utils/dateUtils";
 
 export default function CommentCard({ comment, onDelete }) {
     const handleDelete = () => {

@@ -5,11 +5,12 @@ import { Lock, UsersRound, LockKeyhole, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { setTokenCookie } from "@/actions/auth";
+import { saveTokens } from "@/utils/token";
 
 // import { setAuthToken } from '@/app/utils/cookie';
-
 export default function Login() {
   // const [email, setEmail] = useState('');
+  const keycloakUrl = process.env.KEYCLOAK_HOST;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -19,9 +20,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("เข้าสู่ระบบด้วย:", username, password);
+    console.log(keycloakUrl);
 
     try {
-      const response = await fetch("http://localhost:9091/api/app/token", {
+      const response = await fetch(`/api/auth/token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,10 +40,8 @@ export default function Login() {
 
       const data = await response.json();
 
-      console.log("สำเร็จ:", data);
-
-      localStorage.setItem("token", data.data.access_token);
-      await setTokenCookie(data.data.access_token);
+      saveTokens(data.access_token, data.refresh_token);
+      await setTokenCookie(data.access_token, data.refresh_token);
       router.push("/home");
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);

@@ -10,11 +10,11 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
-import { QuillFormats, QuillModules } from "@/app/utils/QuillConstants";
+import { QuillFormats, QuillModules } from "@/utils/QuillConstants";
 import CommentCard from "@/app/components/CommentCard";
 import BlogByIdLoading from "@/app/components/Skeleton/BlogByIdLoading";
 import CommentBlogLoading from "@/app/components/Skeleton/CommentBlogLoading";
-import { formatDateAndTime } from "@/app/utils/dateUtils";
+import { formatDateAndTime } from "@/utils/dateUtils";
 
 export default function BlogPage({ params }) {
 
