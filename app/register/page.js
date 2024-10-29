@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Loading from "../../components/Loading";
+import Loading from "../components/Loading";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -47,7 +47,7 @@ export default function Register() {
 
       const data = await response.json();
       console.log("ลงทะเบียนสำเร็จ:", data);
-      router.push("/login"); // นำทางไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
+      router.push("/"); // นำทางไปยังหน้า login หลังจากลงทะเบียนสำเร็จ
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
       setError("เกิดข้อผิดพลาดในการลงทะเบียน โปรดลองอีกครั้ง");
@@ -268,7 +268,7 @@ export default function Register() {
               <p className="text-sm text-white mt-8">
                 มีบัญชีอยู่แล้ว?{" "}
                 <a
-                  href="/login"
+                  href="/"
                   className="text-yellow-400 font-semibold hover:underline ml-1"
                 >
                   เข้าสู่ระบบที่นี่
