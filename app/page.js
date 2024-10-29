@@ -38,7 +38,7 @@ export default function Login() {
 
       console.log("สำเร็จ:", data);
 
-      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("token", data.data.access_token);
       router.push("/home");
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);
