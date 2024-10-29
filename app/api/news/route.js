@@ -1,11 +1,13 @@
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 let newsData = [];
 
 export async function GET(req) {
   try {
-    const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
+    // const token = req.headers.get("Authorization")?.split(" ")[1];
+    const token = cookies().get("token")?.value; // รับ token จาก headers
 
     if (!token) {
       return NextResponse.json(

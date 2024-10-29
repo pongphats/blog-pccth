@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Lock, UsersRound, LockKeyhole, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { setTokenCookie } from "@/actions/auth";
+
 // import { setAuthToken } from '@/app/utils/cookie';
 
 export default function Login() {
@@ -39,6 +41,7 @@ export default function Login() {
       console.log("สำเร็จ:", data);
 
       localStorage.setItem("token", data.data.access_token);
+      await setTokenCookie(data.data.access_token);
       router.push("/home");
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการลงทะเบียน:", error);

@@ -6,14 +6,10 @@ import { cookies } from "next/headers";
 
 // ฟังก์ชันสำหรับดึงข้อมูลข่าวสาร
 async function fetchNewsData() {
-  const token = cookies().get("token")?.value;
   try {
     // เพิ่ม timestamp เพื่อป้องกันการแคช
     const response = await fetch(`${process.env.PUBLIC_HOST}/api/news`, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`, // ส่ง token ใน headers
-      },
       cache: "no-store",
       next: { revalidate: 0 },
     });
@@ -23,7 +19,7 @@ async function fetchNewsData() {
     const data = await response.json();
     // เพิ่ม delay 1 วินาที
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    return data.sort((a, b) => a.newsId - b.newsId);
+    return data.data.sort((a, b) => a.newsId - b.newsId);
   } catch (error) {
     console.error("เกิดข้อผิดพลาดในการดึงข้อมูลข่าวสาร:", error);
     return [];
