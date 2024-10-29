@@ -85,9 +85,9 @@ export default function NewsEditorPage() {
           });
 
       if (response.ok) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         router.refresh();
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         router.push("/news");
       } else {
         const errorData = await response.json();
