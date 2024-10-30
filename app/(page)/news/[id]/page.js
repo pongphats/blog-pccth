@@ -33,7 +33,7 @@ export default function NewsPage() {
           const data = await response.json();
           // เพิ่ม delay 1000 มิลลิวินาที
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          setNews(data);
+          setNews(data.data);
         } catch (error) {
           console.error("Error fetching news item:", error);
         } finally {
