@@ -46,8 +46,8 @@ export default function BlogEditorPage({ params }) {
         throw new Error("Failed to fetch blog item");
       }
       const blogData = await response.json();
-      setTitle(blogData.postHeader);
-      setContent(blogData.postBody);
+      setTitle(blogData.data.postHeader);
+      setContent(blogData.data.postBody);
     } catch (error) {
       console.error("Error fetching blog item:", error);
       router.push('/blogs/editor');

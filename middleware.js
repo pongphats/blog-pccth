@@ -7,7 +7,7 @@ export async function middleware(request) {
     const accessToken = request.cookies.get("token")?.value;
     const refreshToken = request.cookies.get("refresh_token")?.value;
 
-    if (!accessToken && !refreshToken) {
+    if (!accessToken) {
       throw new Error("No access token");
     }
 

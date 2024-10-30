@@ -18,6 +18,7 @@ import {
 import ThemeToggle from "./ThemeToggle";
 import NotificationButton from "./NotificationButton";
 import { useRouter } from "next/navigation";
+import { clearAuthCookies } from '@/actions/auth'
 
 const navLinks = [
   { href: "/home", label: "หน้าหลัก" },
@@ -46,7 +47,7 @@ const Navigation = () => {
 
           if (response.ok) {
             const data = await response.json();
-            setUserProfile(data);
+            setUserProfile(data.data);
           }
         }
       } catch (error) {
@@ -57,8 +58,9 @@ const Navigation = () => {
     fetchProfile();
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("token");
+    await clearAuthCookies();
     router.push("/");
     setUserProfile(null);
   };
@@ -124,7 +126,7 @@ const Navigation = () => {
                 <Button variant="light" isIconOnly className="text-white">
                   <Avatar
                     size="sm"
-                    src="https://i.pravatar.cc/150"
+                    // src="https://i.pravatar.cc/150"
                     className="cursor-pointer"
                   />
                 </Button>
@@ -132,7 +134,7 @@ const Navigation = () => {
               <PopoverContent className="p-4 w-64">
                 <div className="flex flex-col items-center gap-4">
                   <Avatar
-                    src="https://i.pravatar.cc/150"
+                    // src="https://i.pravatar.cc/150"
                     className="w-20 h-20"
                   />
                   {userProfile && (

@@ -51,7 +51,7 @@ export default function BlogPage({ params }) {
       }
 
       const blogData = await response.json();
-      setBlog(blogData);
+      setBlog(blogData.data);
     } catch (err) {
       setError(err.message);
     } finally {
