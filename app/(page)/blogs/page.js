@@ -3,11 +3,13 @@ import Link from "next/link";
 import { SquarePlus } from "lucide-react";
 import BlogCard from "../../components/BlogCard";
 import Layout from "./layout";
-import { fetchBlogData } from "@/actions/fetch";
+import { fetchBlogData, fetchProfileData } from "@/actions/fetch";
 
 export default async function BlogsPage() {
 
   const blogsData = await fetchBlogData();
+
+
 
   const breadcrumbItems = [
     { label: "หน้าหลัก", href: "/home" },

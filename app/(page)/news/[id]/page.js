@@ -6,10 +6,13 @@ import Link from "next/link";
 import Breadcrumb from "@/app/components/Breadcrumb";
 import Dialog from "@/app/components/Dialog";
 import SkeletonNewsDetail from "@/app/components/Skeleton/SkeletonNewsDetail"; // นำเข้าคอมโพเนนต์ใหม่
+import { fetchProfileData } from "@/actions/fetch"; // เพิ่ม import
 
 export default function NewsPage() {
   const [news, setNews] = useState(null);
   const [loading, setLoading] = useState(true); // เพิ่มสถานะ loading
+  const [profile, setProfile] = useState(null); // เพิ่ม state สำหรับเก็บข้อมูลโปรไฟล์
+  const [isAdmin, setIsAdmin] = useState(false); // เพิ่ม state สำหรับเก็บสถานะ admin
   const { id } = useParams();
   const router = useRouter();
 
@@ -44,6 +47,41 @@ export default function NewsPage() {
       fetchNewsItem();
     }
   }, [id]);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setProfile(data.data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, []); // เรียกใช้เมื่อคอมโพเนนต์โหลดครั้งแรก
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        const userProfile = await fetchProfileData();
+        const mappings = userProfile?.clientMappings?.['sso-client-api']?.mappings || [];
+        const adminStatus = mappings.some(mapping => mapping.name === 'client_admin');
+        setIsAdmin(adminStatus);
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, []);
 
   const handleDelete = async () => {
     const confirmed = await Dialog.confirm(
@@ -111,19 +149,21 @@ export default function NewsPage() {
             วันที่: {new Date(news.newsCreateDate).toLocaleDateString("th-TH")}
           </p>
 
-          <div className="flex flex-row gap-2">
-            <Link href={`/news/editor/${news.newsId}`}>
-              <div className="flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
-                <span>แก้ไข</span>
+          {isAdmin && ( // แสดงปุ่มเฉพาะเมื่อเป็น admin
+            <div className="flex flex-row gap-2">
+              <Link href={`/news/editor/${news.newsId}`}>
+                <div className="flex items-center text-black dark:text-white cursor-pointer hover:text-green-500">
+                  <span>แก้ไข</span>
+                </div>
+              </Link>
+              <div
+                onClick={handleDelete}
+                className="flex items-center text-black dark:text-white cursor-pointer hover:text-red-500"
+              >
+                <span>ลบ</span>
               </div>
-            </Link>
-            <div
-              onClick={handleDelete}
-              className="flex items-center text-black dark:text-white cursor-pointer hover:text-red-500"
-            >
-              <span>ลบ</span>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
