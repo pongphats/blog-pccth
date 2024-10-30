@@ -34,8 +34,8 @@ export default function NewsEditorPage() {
             throw new Error("Failed to fetch news item");
           }
           const data = await response.json();
-          setTitle(data.newsHeader);
-          setContent(data.newsBody);
+          setTitle(data.data.newsHeader);
+          setContent(data.data.newsBody);
         } catch (error) {
           console.error("Error fetching news item:", error);
         } finally {
