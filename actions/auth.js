@@ -40,3 +40,9 @@ export async function getNewAccessToken(refresh_token) {
     return { access_token: null, refresh_token: null };
   }
 }
+
+export async function clearAuthCookies() {
+  const cookieStore = cookies()
+  cookieStore.delete('token')
+  cookieStore.delete('user')
+} 
