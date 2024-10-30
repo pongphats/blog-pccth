@@ -11,7 +11,6 @@ import { fetchProfileData } from "@/actions/fetch"; // เพิ่ม import
 export default function NewsPage() {
   const [news, setNews] = useState(null);
   const [loading, setLoading] = useState(true); // เพิ่มสถานะ loading
-  const [profile, setProfile] = useState(null); // เพิ่ม state สำหรับเก็บข้อมูลโปรไฟล์
   const [isAdmin, setIsAdmin] = useState(false); // เพิ่ม state สำหรับเก็บสถานะ admin
   const { id } = useParams();
   const router = useRouter();

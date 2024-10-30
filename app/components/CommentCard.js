@@ -3,12 +3,12 @@ import { Trash2 } from 'lucide-react';
 import { Tooltip } from "@nextui-org/react";
 import { formatDateAndTime } from "@/utils/dateUtils";
 
-export default function CommentCard({ comment, onDelete, userProfile }) {
+export default function CommentCard({ comment, onDelete, userProfile, isAdmin }) {
     const handleDelete = () => {
         onDelete(comment);
     };
 
-    const currentUser = userProfile?.name || 'Anonymous';
+    const currentUser = userProfile?.name;
 
     return (
         <div className="border rounded p-3 m-3">
@@ -21,7 +21,7 @@ export default function CommentCard({ comment, onDelete, userProfile }) {
                     </div>
                 </div>
                 {/* แสดงปุ่มลบเฉพาะเมื่อ comment เป็นของผู้ใช้ปัจจุบัน */}
-                {comment.commentCreateBy === currentUser && (
+                {(comment.commentCreateBy === currentUser || isAdmin) && (
                     <div>
                         <Tooltip content="delete comment">
                             <Trash2 

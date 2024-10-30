@@ -27,6 +27,7 @@ export default function BlogPage({ params }) {
   const [comments, setComments] = useState(null)
   const [token, setToken] = useState("");
   const [userProfile, setUserProfile] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
@@ -100,6 +101,11 @@ export default function BlogPage({ params }) {
 
       const data = await response.json();
       setUserProfile(data.data);
+
+      const mappings = data.data?.clientMappings?.['sso-client-api']?.mappings || [];
+      const adminStatus = mappings.some(mapping => mapping.name === 'client_admin');
+      setIsAdmin(adminStatus);
+
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
@@ -237,12 +243,14 @@ export default function BlogPage({ params }) {
             <div className="flex flex-row justify-between">
               <p className="text-3xl font-bold">{blog.postHeader}</p>
               {/*Button edit Blog & Button delete Blog*/}
-              <div>
-                <Link href={`/blogs/editor/${blog.id}`}>
-                  <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
-                </Link>
-                <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600" onClick={handleDelete}><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
-              </div>
+              {(isAdmin || userProfile?.username === blog.postCreateBy) && (
+                <div>
+                  <Link href={`/blogs/editor/${blog.id}`}>
+                    <button className="p-2 rounded text-white bg-yellow-500 active:bg-yellow-600"><Pencil className="w-4 h-4 inline mr-[2px]" />แก้ไขบล็อก</button>
+                  </Link>
+                  <button className="ml-2 p-2 rounded text-white bg-red-500 active:bg-red-600" onClick={handleDelete}><Trash2 className="w-4 h-4 inline mr-[2px]" />ลบบล็อก</button>
+                </div>
+              )}
             </div>
 
             {/* details blog */}
@@ -271,7 +279,7 @@ export default function BlogPage({ params }) {
             <p className="text-lg font-semibold mt-5">ความคิดเห็น {comments && comments.length > 0 ? "(" + comments.length + ")" : ""}</p>
             {comments && comments.length > 0 ? (
               comments.map((comment) => (
-                <CommentCard comment={comment} key={comment.id} onDelete={handleDeleteComment} userProfile={userProfile} />
+                <CommentCard comment={comment} key={comment.id} onDelete={handleDeleteComment} userProfile={userProfile} isAdmin={isAdmin} />
               ))
             ) : (
               <p>ไม่มีความคิดเห็น</p>

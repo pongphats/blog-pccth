@@ -50,7 +50,7 @@ export async function PUT(req, { params }) {
     const newBlog = await req.json();
 
     const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
-    console.log("PUT BY token", token)
+    // console.log("PUT BY token", token)
     if (!token) {
         return NextResponse.json(
             { message: "ไม่พบ Token การยืนยันตัวตน" },

@@ -8,6 +8,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/utils/QuillConstants";
+import { fetchProfileData } from "@/actions/fetch";
 
 export default function BlogEditorPage({ params }) {
   const router = useRouter();
@@ -16,9 +17,16 @@ export default function BlogEditorPage({ params }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [labelText, setLabelText] = useState("สร้างบทความใหม่");
-
+  const [userProfile, setUserProfile] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false); // เพิ่ม state สำหรับเก็บสถานะ admin
 
   useEffect(() => {
+    const getUserProfile = async () => {
+      const profile = await fetchProfileData();
+      setUserProfile(profile);
+    };
+    getUserProfile();
+
     if (id) {
       setLabelText("แก้ไขบทความ");
       console.log("แก้ไขบทความ");
@@ -30,7 +38,7 @@ export default function BlogEditorPage({ params }) {
         setIsLoading(false);
       }, 1000);
     }
-  }, [id]); // เพิ่ม token ใน dependencies
+  }, [id]);
 
   async function fetchBlogById(blogId) {
     try {
@@ -38,7 +46,7 @@ export default function BlogEditorPage({ params }) {
       const response = await fetch(`/api/blog/${blogId}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`, // ส่ง token ใน headers
+          Authorization: `Bearer ${token}`,
         },
         cache: "no-store",
       });
@@ -64,11 +72,11 @@ export default function BlogEditorPage({ params }) {
 
     const blogData = {
       header: title,
-      body: content
+      body: content,
+      createBy: userProfile?.username
     };
 
     const token = localStorage.getItem("token");
-    console.log("token",token)
 
     const response = await fetch(apiUrl, {
       method,

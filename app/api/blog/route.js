@@ -63,7 +63,7 @@ export async function POST(req) {
     const reqData = {
       PostHeader: newBlog.header,
       PostBody: newBlog.body,
-      PostCreateBy: newBlog.createBy || "anonymous",
+      PostCreateBy: newBlog.createBy
     };
 
     const response = await fetch(
