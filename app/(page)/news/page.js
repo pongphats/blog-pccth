@@ -1,15 +1,11 @@
-import NewCard from "@/app/components/Newcard";
 import Breadcrumb from "@/app/components/Breadcrumb";
-import Link from "next/link";
-import { SquarePlus } from "lucide-react";
 import { fetchNewsData, fetchProfileData } from "@/actions/fetch";
+import NewsAdminButton from "@/app/components/NewsAdminButton";
+import NewsList from "@/app/components/NewsList";
 
 export default async function NewsListPage() {
-  const newsData = await fetchNewsData();
-
-  const userProfile = await fetchProfileData();
-  const mappings = userProfile?.clientMappings?.['sso-client-api']?.mappings || [];
-  const isAdmin = mappings.some(mapping => mapping.name === 'client_admin');
+  // Server-side data fetching
+  const [newsData] = await Promise.all([fetchNewsData()]);
 
   const breadcrumbItems = [
     { label: "หน้าหลัก", href: "/home" },
@@ -21,20 +17,9 @@ export default async function NewsListPage() {
       <Breadcrumb items={breadcrumbItems} />
       <div className="flex flex-row justify-between">
         <h1 className="text-2xl font-bold mb-4 mt-5">ข้อมูลข่าวสาร</h1>
-        {isAdmin && (
-          <Link
-            href="/news/editor"
-            className="inline-flex items-center px-2 py-2 border border-green-500 bg-green-500 rounded mb-4 mt-5 text-white "
-          >
-            <SquarePlus className="mr-2" /> เพิ่มข่าวสาร
-          </Link>
-        )}
+        <NewsAdminButton />
       </div>
-      <ul>
-        {newsData.map((news) => (
-          <NewCard key={news.newsId} news={news} />
-        ))}
-      </ul>
+      <NewsList newsData={newsData} />
     </div>
   );
 }
