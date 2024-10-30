@@ -23,22 +23,22 @@ export default function Comment() {
     { label: "แสดงความคิดเห็น", href: "/comment" },
   ];
 
-  useEffect(() => {
-    fetchComments();
-  }, []);
+  // useEffect(() => {
+  //   fetchComments();
+  // }, []);
 
-  const fetchComments = async () => {
-    try {
-      const response = await fetch("/json/contact_data.json");
-      if (!response.ok) {
-        throw new Error("เกิดข้อผิดพลาดในการดึงข้อมูล");
-      }
-      const data = await response.json();
-      setComments(data);
-    } catch (error) {
-      console.error("เกิดข้อผิดพลาด:", error);
-    }
-  };
+  // const fetchComments = async () => {
+  //   try {
+  //     const response = await fetch("/json/contact_data.json");
+  //     if (!response.ok) {
+  //       throw new Error("เกิดข้อผิดพลาดในการดึงข้อมูล");
+  //     }
+  //     const data = await response.json();
+  //     setComments(data);
+  //   } catch (error) {
+  //     console.error("เกิดข้อผิดพลาด:", error);
+  //   }
+  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

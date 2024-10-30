@@ -17,7 +17,6 @@ import CommentBlogLoading from "@/app/components/Skeleton/CommentBlogLoading";
 import { formatDateAndTime } from "@/utils/dateUtils";
 
 export default function BlogPage({ params }) {
-
   const router = useRouter();
   const id = params.id
   const [blog, setBlog] = useState("")
@@ -27,6 +26,7 @@ export default function BlogPage({ params }) {
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState(null)
   const [token, setToken] = useState("");
+  const [userProfile, setUserProfile] = useState(null);
 
   const breadcrumbItems = [
     { label: 'หน้าหลัก', href: '/' },
@@ -62,7 +62,13 @@ export default function BlogPage({ params }) {
   async function fetchCommentsByBlogId(blogId) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await fetch(`http://localhost:8080/comment/getCommentByPostId/${blogId}`)
+      const response = await fetch(`/api/blog/comment/${blogId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -70,12 +76,32 @@ export default function BlogPage({ params }) {
       }
 
       const comments = await response.json();
-      setComments(comments)
-      console.log("response COMMENT", comments)
+      setComments(comments.data)
+      // console.log("response COMMENT", comments)
     } catch (error) {
       console.error("get comment error : ", error)
     } finally {
       setLoadingComment(false);
+    }
+  }
+
+  async function fetchUserProfile() {
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user profile');
+      }
+
+      const data = await response.json();
+      setUserProfile(data.data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
     }
   }
 
@@ -89,7 +115,7 @@ export default function BlogPage({ params }) {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-        },
+          },
         });
 
         if (!response.ok) {
@@ -120,54 +146,57 @@ export default function BlogPage({ params }) {
   };
 
   async function handleCreateComment() {
-    console.log(comment)
-    const reqData = {
-      postID: parseInt(id),
-      CommentBody: comment,
-      CommentCreateBy: "mock by pure"
+    if (!comment.trim()) {
+      await Dialog.warning('แจ้งเตือน', 'กรุณากรอกความคิดเห็น');
+      return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/comment/createComment`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(reqData)
-        }
-      )
+      const response = await fetch(`/api/blog/comment/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          commentBody: comment,
+          commentCreateBy: userProfile?.name || 'Anonymous' // ใช้ชื่อจริงจาก userProfile
+        })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to create comment');
+        throw new Error('ไม่สามารถสร้างความคิดเห็นได้');
       }
 
-      const data = await response.json();
-      fetchCommentsByBlogId(id)
-      setComment("")
-      console.log('Comment created:', data);
+      await Dialog.success('สำเร็จ', 'เพิ่มความคิดเห็นเรียบร้อยแล้ว');
+      fetchCommentsByBlogId(id);
+      setComment("");
     } catch (error) {
-      console.error("add comment error : ", error)
+      console.error("add comment error:", error);
+      await Dialog.error('ผิดพลาด', 'ไม่สามารถเพิ่มความคิดเห็นได้');
     }
   }
 
   async function handleDeleteComment(comment) {
-
     const confirmed = await Dialog.confirm("คุณต้องการลบความคิดเห็นนี้หรือไม่?");
     if (confirmed) {
       try {
-        const response = await fetch(`http://localhost:8080/comment/deleteComment/${comment.id}`, {
+        const response = await fetch(`/api/blog/comment/${comment.id}`, {
           method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to delete blog");
+          throw new Error("ไม่สามารถลบความคิดเห็นได้");
         }
-        await Dialog.success('ลบแล้ว!', 'บล็อกของคุณถูกลบแล้ว.');
-        fetchCommentsByBlogId(id)
+
+        await Dialog.success('สำเร็จ', 'ลบความคิดเห็นเรียบร้อยแล้ว');
+        fetchCommentsByBlogId(id);
       } catch (error) {
-        console.error("Error deleting blog:", error);
+        console.error("Error deleting comment:", error);
+        await Dialog.error('ผิดพลาด', 'ไม่สามารถลบความคิดเห็นได้');
       }
     }
   }
@@ -181,8 +210,9 @@ export default function BlogPage({ params }) {
     if (token) {
       console.log(id)
       fetchBlogById(id)
+      fetchCommentsByBlogId(id)
+      fetchUserProfile()
     }
-    // fetchCommentsByBlogId(id)
   }, [id, token])
 
   const modules = QuillModules;
@@ -234,23 +264,23 @@ export default function BlogPage({ params }) {
 
       {/* comment */}
       <div className="mt-8 rounded">
-        {/* {isLoadingComment ? (
+        {isLoadingComment ? (
           <CommentBlogLoading />
         ) : (
           <>
             <p className="text-lg font-semibold mt-5">ความคิดเห็น {comments && comments.length > 0 ? "(" + comments.length + ")" : ""}</p>
             {comments && comments.length > 0 ? (
               comments.map((comment) => (
-                <CommentCard comment={comment} key={comment.id} onDelete={handleDeleteComment} />
+                <CommentCard comment={comment} key={comment.id} onDelete={handleDeleteComment} userProfile={userProfile} />
               ))
             ) : (
               <p>ไม่มีความคิดเห็น</p>
             )}
           </>
-        )} */}
+        )}
 
         {/* add comment */}
-        {/* <div className="m-3 mt-5">
+        <div className="m-3 mt-5">
           <p>แสดงความคิดเห็น :</p>
           <div className="quill-editor mt-4">
             <ReactQuill
@@ -264,7 +294,7 @@ export default function BlogPage({ params }) {
         </div>
         <div className="flex justify-end m-3">
           <button className="bg-blue-500 active:bg-blue-600 text-white p-2 rounded mr-2" onClick={handleCreateComment}>เพิ่มความคิดเห็น</button>
-        </div> */}
+        </div>
       </div>
 
     </Layout >

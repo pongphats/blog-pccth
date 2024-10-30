@@ -10,7 +10,7 @@ export async function GET(req, { params }) {
         console.log("GET BY id", blogId)
 
         const token = req.headers.get("Authorization")?.split(" ")[1]; // รับ token จาก headers
-        console.log("GET BY token", token)
+        // console.log("GET BY token", token)
         if (!token) {
             return NextResponse.json(
                 { message: "ไม่พบ Token การยืนยันตัวตน" },

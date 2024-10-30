@@ -59,3 +59,42 @@ export async function fetchBlogData() {
     return [];
   }
 }
+
+// ฟังก์ชันสำหรับดึงข้อมูลโปรไฟล์
+export async function fetchProfileData() {
+  try {
+    const token = cookies().get("token")?.value;     
+    if (!token) {
+      throw new Error("ไม่พบ token สำหรับการเข้าถึง");
+    }
+
+    const response = await fetch(
+      `${process.env.KEYCLOAK_HOST}/api/app/getprofile`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        cache: 'no-store'
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // ตรวจสอบว่าข้อมูลที่ได้รับมีโครงสร้างที่ถูกต้อง
+    if (!data.data) {
+      throw new Error("ข้อมูลที่ได้รับไม่ถูกต้อง");
+    }
+
+    return data.data;
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์:", error.message);
+    throw error;
+  }
+}
+
