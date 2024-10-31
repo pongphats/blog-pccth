@@ -7,6 +7,7 @@ import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/utils/QuillConstants";
 import Loading from "@/app/components/Loading";
+import Dialog from "@/app/components/Dialog";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -55,6 +56,14 @@ export default function NewsEditorPage() {
   }, [id]);
 
   const handleSave = async () => {
+    const confirmSave = await Dialog.confirm(
+      "ยืนยันการบันทึก",
+      "คุณแน่ใจหรือไม่ว่าต้องการบันทึกข่าวสารนี้?"
+    );
+    if (!confirmSave) {
+      return; // หากผู้ใช้ไม่ยืนยัน ให้หยุดการดำเนินการ
+    }
+
     const newsData = {
       id,
       newsHeader: title,

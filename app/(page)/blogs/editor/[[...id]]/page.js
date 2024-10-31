@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import Loading from "@/app/components/Loading";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "@/app/styles/quill.css";
 import { QuillFormats, QuillModules } from "@/utils/QuillConstants";
 import { fetchProfileData } from "@/actions/fetch";
+import Dialog from "@/app/components/Dialog";
 
 export default function BlogEditorPage({ params }) {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function BlogEditorPage({ params }) {
       setContent(blogData.data.postBody);
     } catch (error) {
       console.error("Error fetching blog item:", error);
-      router.push('/blogs/editor');
+      router.push("/blogs/editor");
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -67,13 +68,21 @@ export default function BlogEditorPage({ params }) {
   }
 
   async function handleSave() {
+    const confirmSave = await Dialog.confirm(
+      "ยืนยันการบันทึก",
+      "คุณแน่ใจหรือไม่ว่าต้องการบันทึบล็อกนี้?"
+    );
+    if (!confirmSave) {
+      return;
+    }
+
     const apiUrl = id ? `/api/blog/${id}` : `/api/blog`;
     const method = id ? "PUT" : "POST";
 
     const blogData = {
       header: title,
       body: content,
-      createBy: userProfile?.username
+      createBy: userProfile?.username,
     };
 
     const token = localStorage.getItem("token");
@@ -82,21 +91,21 @@ export default function BlogEditorPage({ params }) {
       method,
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(blogData),
-      cache: 'no-store'
+      cache: "no-store",
     });
 
     if (response.ok) {
       await new Promise((resolve, reject) => {
         return setTimeout(resolve, 500);
-      })
-      router.refresh()
+      });
+      router.refresh();
       await new Promise((resolve, reject) => {
         return setTimeout(resolve, 500);
-      })
-      router.push('/blogs');
+      });
+      router.push("/blogs");
     } else {
       console.error("Failed to save blog.");
     }
