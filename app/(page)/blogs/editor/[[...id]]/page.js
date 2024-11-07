@@ -84,7 +84,7 @@ export default function BlogEditorPage({ params }) {
     const blogData = {
       header: title,
       body: content,
-      createBy: userProfile?.username,
+      createBy: userProfile?.user_id,
     };
 
     const token = localStorage.getItem("token");
