@@ -20,6 +20,8 @@ export default function BlogEditorPage({ params }) {
   const [labelText, setLabelText] = useState("สร้างบทความใหม่");
   const [userProfile, setUserProfile] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false); // เพิ่ม state สำหรับเก็บสถานะ admin
+  const [videoUrl, setVideoUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -111,6 +113,45 @@ export default function BlogEditorPage({ params }) {
     }
   }
 
+  async function handleVideoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("video", file);
+
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/upload/video", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("อัพโหลดวิดีโอไม่สำเร็จ");
+      }
+
+      const data = await response.json();
+      setVideoUrl(data.url);
+
+      // เพิ่ม URL วิดีโอลงใน editor
+      setContent((prev) => {
+        return prev + `\n<video controls src="${data.url}"></video>\n`;
+      });
+
+      await Dialog.alert("สำเร็จ", "อัพโหลดวิดีโอเรียบร้อยแล้ว");
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      await Dialog.alert("ผิดพลาด", "ไม่สามารถอัพโหลดวิดีโอได้");
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
   const modules = QuillModules;
   const formats = QuillFormats;
 
@@ -145,13 +186,25 @@ export default function BlogEditorPage({ params }) {
             />
           </div>
         </div>
-        <div className="bg-white  dark:bg-gray-900 m-5 p-5 rounded-md">
+        <div className="bg-white dark:bg-gray-900 m-5 p-5 rounded-md">
           <label
             htmlFor="body"
             className="block text-2xl font-medium mb-2 text-gray-900 dark:text-white"
           >
             เนื้อหาบทความ
           </label>
+          <div className="mb-4 flex justify-end">
+            <label className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 disabled:bg-gray-400">
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                className="hidden"
+                disabled={isUploading}
+              />
+              {isUploading ? "กำลังอัพโหลด..." : "อัพโหลดวิดีโอ"}
+            </label>
+          </div>
           <div className="quill-editor">
             <ReactQuill
               theme="snow"
