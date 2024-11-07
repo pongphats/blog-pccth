@@ -22,6 +22,8 @@ export default function BlogEditorPage({ params }) {
   const [isAdmin, setIsAdmin] = useState(false); // เพิ่ม state สำหรับเก็บสถานะ admin
   const [videoUrl, setVideoUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadedUrl, setUploadedUrl] = useState("");
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -113,17 +115,30 @@ export default function BlogEditorPage({ params }) {
     }
   }
 
-  async function handleVideoUpload(e) {
+  async function handleFileSelect(e) {
     const file = e.target.files[0];
-    if (!file) return;
+    if (file) {
+      setSelectedFile(file);
+      setUploadedUrl(""); // รีเซ็ต URL เมื่อเลือกไฟล์ใหม่
+    }
+  }
+
+  async function handleVideoUpload() {
+    if (!selectedFile) {
+      console.log("กรุณาเลือกไฟล์วิดีโอ");
+      return;
+    }
 
     setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("video", file);
+    const formData = new FormData();
+    formData.append("video", selectedFile);
+    formData.append("title", title || "Untitled");
+    formData.append("description", "Blog video");
+    formData.append("createBy", userProfile?.user_id);
 
+    try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/upload/video", {
+      const response = await fetch("/api/upload", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -136,17 +151,14 @@ export default function BlogEditorPage({ params }) {
       }
 
       const data = await response.json();
-      setVideoUrl(data.url);
+      setUploadedUrl(data.fullURL);
+      setVideoUrl(data.fullURL);
 
-      // เพิ่ม URL วิดีโอลงใน editor
-      setContent((prev) => {
-        return prev + `\n<video controls src="${data.url}"></video>\n`;
-      });
-
-      await Dialog.alert("สำเร็จ", "อัพโหลดวิดีโอเรียบร้อยแล้ว");
+      // เพิ่ม URL วิดีโอลงในเนื้อหาบทความ
+      const videoHtml = `<video controls src="${data.fullURL}" style="width: 100%; max-width: 600px;"></video>`;
+      setContent((prevContent) => prevContent + videoHtml);
     } catch (error) {
       console.error("Error uploading video:", error);
-      await Dialog.alert("ผิดพลาด", "ไม่สามารถอัพโหลดวิดีโอได้");
     } finally {
       setIsUploading(false);
     }
@@ -193,18 +205,7 @@ export default function BlogEditorPage({ params }) {
           >
             เนื้อหาบทความ
           </label>
-          <div className="mb-4 flex justify-end">
-            <label className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 disabled:bg-gray-400">
-              <input
-                type="file"
-                accept="video/*"
-                onChange={handleVideoUpload}
-                className="hidden"
-                disabled={isUploading}
-              />
-              {isUploading ? "กำลังอัพโหลด..." : "อัพโหลดวิดีโอ"}
-            </label>
-          </div>
+
           <div className="quill-editor">
             <ReactQuill
               theme="snow"
@@ -213,6 +214,50 @@ export default function BlogEditorPage({ params }) {
               modules={modules}
               formats={formats}
             />
+          </div>
+        </div>
+        <div className="bg-white dark:bg-gray-900 m-5 p-5 rounded-md">
+          <label className="block text-2xl font-medium mb-2 text-gray-900 dark:text-white">
+            อัพโหลดวิดีโอ
+          </label>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleFileSelect}
+                disabled={isUploading}
+                className="block w-full text-sm text-gray-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-blue-50 file:text-blue-700
+                  hover:file:bg-blue-100
+                  dark:file:bg-gray-700 dark:file:text-gray-200"
+              />
+              <button
+                onClick={handleVideoUpload}
+                disabled={!selectedFile || isUploading}
+                className={`px-4 py-2 rounded ${
+                  !selectedFile || isUploading
+                    ? "bg-gray-400"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white`}
+              >
+                {isUploading ? "กำลังอัพโหลด..." : "อัพโหลด"}
+              </button>
+            </div>
+
+            {uploadedUrl && (
+              <div className="mt-4">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  URL วิดีโอที่อัพโหลด:
+                </p>
+                <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-800 rounded break-all">
+                  {uploadedUrl}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex justify-end">
